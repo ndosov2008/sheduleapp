@@ -42,7 +42,7 @@ body.theme-purple {
     --border-color: #3b3160;
 }
 
-/* Тема: Аниме Неон */
+/* Тема: Аниме Неон (твоя первая картинка) */
 body.theme-anime-dark {
     --bg-color: #0f0a1a;
     --card-bg: rgba(30, 20, 50, 0.85);
@@ -50,21 +50,21 @@ body.theme-anime-dark {
     --hint-color: #b19cd9;
     --accent-color: #ff3399;
     --border-color: #4a2865;
-    background-image: linear-gradient(rgba(15, 10, 26, 0.85), rgba(15, 10, 26, 0.85)), url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1000&auto=format&fit=crop');
+    background-image: linear-gradient(rgba(15, 10, 26, 0.82), rgba(15, 10, 26, 0.82)), url('https://i.pinimg.com/736x/84/47/9a/84479a8b88080970243e0eab9cffc726.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
-/* Тема: Аниме Пастель */
+/* Тема: Аниме Пастель (твоя вторая картинка) */
 body.theme-anime-light {
     --bg-color: #fff0f5;
-    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-bg: rgba(255, 255, 255, 0.88);
     --text-color: #6b4c58;
     --hint-color: #a67c8d;
     --accent-color: #ff8da1;
     --border-color: #ffc2d1;
-    background-image: linear-gradient(rgba(255, 240, 245, 0.9), rgba(255, 240, 245, 0.9)), url('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1000&auto=format&fit=crop');
+    background-image: linear-gradient(rgba(255, 240, 245, 0.85), rgba(255, 240, 245, 0.85)), url('https://i.pinimg.com/736x/55/c8/9b/55c89b1c9b088d0a7566292b8b48df49.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
