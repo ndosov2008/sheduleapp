@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Расписание БГТУ</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <!-- ЭКРАН 1: Выбор курса и группы -->
+    <div id="selection-screen" class="screen active">
+        <header class="main-header">
+            <div class="header-top">
+                <h1>БГТУ</h1>
+                <button id="open-settings-btn" class="icon-btn-top">⚙️</button>
+            </div>
+            <p class="subtitle">Факультет ИТ</p>
+        </header>
+
+        <div class="selection-block">
+            <h2>Выберите курс</h2>
+            <div class="grid-buttons" id="course-grid">
+                <button class="choice-btn" data-type="course" data-val="1">1</button>
+                <button class="choice-btn" data-type="course" data-val="2">2</button>
+                <button class="choice-btn" data-type="course" data-val="3">3</button>
+                <button class="choice-btn" data-type="course" data-val="4">4</button>
+            </div>
+        </div>
+
+        <div class="selection-block hidden" id="group-block">
+            <h2>Выберите группу</h2>
+            <div class="grid-buttons" id="group-grid">
+                <!-- Группы генерируются через JS -->
+            </div>
+        </div>
+
+        <button id="submit-btn" class="main-btn" disabled>Показать расписание</button>
+    </div>
+
+    <!-- ЭКРАН НАСТРОЕК -->
+    <div id="settings-screen" class="screen hidden">
+        <header class="schedule-header">
+            <button id="close-settings-btn" class="icon-btn">⬅ Назад</button>
+            <h2>Настройки</h2>
+        </header>
+
+        <div class="settings-block">
+            <h3>Цветовая тема</h3>
+            <div class="theme-grid">
+                <button class="theme-btn" data-theme="dark">Классика (Тёмная)</button>
+                <button class="theme-btn" data-theme="pink">Нежная (Розовый)</button>
+                <button class="theme-btn" data-theme="blue">Строгая (Синяя)</button>
+                <button class="theme-btn" data-theme="purple">Космос (Фиолет)</button>
+            </div>
+        </div>
+
+        <div class="settings-block">
+            <h3>Быстрый запуск (Группа по умолчанию)</h3>
+            <p class="settings-hint">Выберите группу, которая будет открываться сразу при входе:</p>
+            <div class="default-group-selects">
+                <select id="default-course-select">
+                    <option value="">-- Курс --</option>
+                    <option value="1">1 курс</option>
+                    <option value="2">2 курс</option>
+                    <option value="3">3 курс</option>
+                    <option value="4">4 курс</option>
+                </select>
+                <select id="default-group-select">
+                    <option value="">-- Группа --</option>
+                    <option value="1">1 (ИСИТ)</option>
+                    <option value="2">2 (ИСИТ)</option>
+                    <option value="3">3 (ИСИТ)</option>
+                    <option value="4">4 (ЦД)</option>
+                    <option value="5">5 (ЦД)</option>
+                    <option value="6">6 (ПИ)</option>
+                    <option value="7">7 (ПИ)</option>
+                    <option value="8">8 (ПИ)</option>
+                </select>
+            </div>
+            <button id="save-settings-btn" class="main-btn" style="margin-top: 15px;">Сохранить и применить</button>
+            <button id="reset-settings-btn" class="secondary-btn">Сбросить быстрый запуск</button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 2: Само расписание -->
+    <div id="schedule-screen" class="screen hidden">
+        <header class="schedule-header">
+            <button id="back-btn" class="icon-btn">⬅ Назад</button>
+            <h2 id="current-selection-title">Загрузка...</h2>
+            <button id="schedule-settings-btn" class="icon-btn-top" style="margin-left: auto;">⚙️</button>
+        </header>
+        
+        <!-- Выбор дня недели -->
+        <div class="days-tabs" id="days-tabs">
+            <button class="day-tab active" data-day="1">ПН</button>
+            <button class="day-tab" data-day="2">ВТ</button>
+            <button class="day-tab" data-day="3">СР</button>
+            <button class="day-tab" data-day="4">ЧТ</button>
+            <button class="day-tab" data-day="5">ПТ</button>
+            <button class="day-tab" data-day="6">СБ</button>
+        </div>
+
+        <main id="schedule-container">
+            <!-- Карточки расписания -->
+        </main>
+    </div>
+</body>
+</html>

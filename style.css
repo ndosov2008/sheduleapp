@@ -1,0 +1,320 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Цветовые темы */
+body.theme-dark {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #ffffff;
+    --hint-color: #aaaaaa;
+    --accent-color: #3390ec;
+    --border-color: #333333;
+}
+
+body.theme-pink {
+    --bg-color: #1a1118;
+    --card-bg: #2b1d28;
+    --text-color: #ffe6f0;
+    --hint-color: #d49bc2;
+    --accent-color: #ff69b4;
+    --border-color: #4a2d42;
+}
+
+body.theme-blue {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-color: #f8fafc;
+    --hint-color: #94a3b8;
+    --accent-color: #0ea5e9;
+    --border-color: #334155;
+}
+
+body.theme-purple {
+    --bg-color: #13101f;
+    --card-bg: #1f1b32;
+    --text-color: #f3e8ff;
+    --hint-color: #c4b5fd;
+    --accent-color: #8b5cf6;
+    --border-color: #3b3160;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.screen {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.main-header {
+    margin-bottom: 30px;
+    padding-top: 10px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.icon-btn-top {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--hint-color);
+    margin-top: 4px;
+}
+
+.selection-block {
+    margin-bottom: 24px;
+}
+
+.selection-block h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.grid-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.choice-btn {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px 0;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.choice-btn.selected {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.group-num {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.group-spec {
+    font-size: 11px;
+    color: var(--hint-color);
+    margin-top: 4px;
+}
+
+.choice-btn.selected .group-spec {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.main-btn {
+    width: 100%;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.main-btn:disabled {
+    background-color: #3a3a3c;
+    color: #777777;
+    cursor: not-allowed;
+}
+
+.secondary-btn {
+    width: 100%;
+    background: transparent;
+    color: var(--hint-color);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* Экран настроек */
+.settings-block {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.settings-block h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.settings-hint {
+    font-size: 13px;
+    color: var(--hint-color);
+    margin-bottom: 10px;
+}
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.theme-btn {
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.theme-btn.active-theme {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+.default-group-selects {
+    display: flex;
+    gap: 10px;
+}
+
+.default-group-selects select {
+    flex: 1;
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* Стили для экрана расписания */
+.schedule-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.schedule-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.subject-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.subject-type {
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent-color);
+    margin-left: 6px;
+    font-weight: 500;
+    vertical-align: middle;
+}
+
+.details p {
+    font-size: 14px;
+    color: var(--hint-color);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.days-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+}
+.days-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.day-tab {
+    flex: 0 0 auto;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.day-tab.active {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border-color: var(--accent-color);
+}
