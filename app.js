@@ -497,16 +497,24 @@ async function openTeacherModal(index) {
         <img src="${photoSrc}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
         <h2 style="font-size: 18px;">${t.name}</h2>
     `;
+
+    // Генерация SVG звездочек для выбора оценки (все активные по умолчанию до 5)
+    let starsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+        starsHtml += `
+            <button type="button" class="star-btn" data-value="${i}" style="background: none; border: none; cursor: pointer; padding: 4px;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="${i <= 5 ? '#facc15' : '#d1d5db'}" stroke="${i <= 5 ? '#ca8a04' : '#9ca3af'}" stroke-width="1">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+            </button>
+        `;
+    }
     
     document.getElementById('teacher-modal-info').innerHTML = `
         <div style="margin-bottom: 15px; text-align: center;">
             <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 8px;">Оценка:</label>
-            <div id="star-rating-picker" style="display: flex; justify-content: center; gap: 8px;">
-                <button type="button" class="star-btn" data-value="1" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">*</button>
-                <button type="button" class="star-btn" data-value="2" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">**</button>
-                <button type="button" class="star-btn" data-value="3" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">***</button>
-                <button type="button" class="star-btn" data-value="4" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">****</button>
-                <button type="button" class="star-btn" data-value="5" style="background: var(--accent-color); color: #fff; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">*****</button>
+            <div id="star-rating-picker" style="display: flex; justify-content: center; gap: 4px;">
+                ${starsHtml}
             </div>
         </div>
     `;
@@ -518,16 +526,18 @@ async function openTeacherModal(index) {
 }
 
 document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('star-btn')) {
-        selectedRatingValue = parseInt(e.target.dataset.value);
+    const starBtn = e.target.closest('.star-btn');
+    if (starBtn) {
+        selectedRatingValue = parseInt(starBtn.dataset.value);
         document.querySelectorAll('.star-btn').forEach(btn => {
             const val = parseInt(btn.dataset.value);
+            const svg = btn.querySelector('svg');
             if (val <= selectedRatingValue) {
-                btn.style.background = 'var(--accent-color)';
-                btn.style.color = '#fff';
+                svg.setAttribute('fill', '#facc15');
+                svg.setAttribute('stroke', '#ca8a04');
             } else {
-                btn.style.background = 'var(--bg-color)';
-                btn.style.color = 'var(--text-color)';
+                svg.setAttribute('fill', '#d1d5db');
+                svg.setAttribute('stroke', '#9ca3af');
             }
         });
     }
@@ -554,13 +564,20 @@ async function renderTeacherReviews(teacherId) {
         approvedReviews.forEach(r => {
             const canDelete = isAdmin || (currentUserId && r.authorId == currentUserId);
             const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 12px; cursor: pointer; color: var(--hint-color);">[Удалить]</button>` : '';
-            const ratingStars = r.rating ? '*'.repeat(Number(r.rating)) : '';
-            const ratingBadge = ratingStars ? `[Оценка: ${ratingStars}]` : '';
+            
+            let reviewStars = '';
+            if (r.rating) {
+                const count = Number(r.rating);
+                for (let i = 1; i <= 5; i++) {
+                    const color = i <= count ? '#facc15' : '#d1d5db';
+                    reviewStars += `<svg width="12" height="12" viewBox="0 0 24 24" fill="${color}" style="display:inline-block; vertical-align:middle; margin-left:1px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+                }
+            }
 
             list.innerHTML += `
                 <div class="review-item" style="padding-top: 8px;">
                     <div style="font-size: 12px; color: var(--accent-color); margin-bottom: 6px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
-                        <span>${r.author || 'Студент'} ${ratingBadge ? `${ratingBadge}` : ''}</span>
+                        <span>${r.author || 'Студент'} <span style="margin-left: 6px;">${reviewStars}</span></span>
                         ${deleteBtnHtml}
                     </div>
                     <div style="font-size: 13px;">${r.text}</div>
@@ -672,12 +689,19 @@ async function renderAdminReviews() {
     } else {
         pendingReviews.forEach(r => {
             const tName = teachersData[r.teacherId]?.name || "Неизвестный препод";
-            const ratingStars = r.rating ? '*'.repeat(Number(r.rating)) : '';
+            let reviewStars = '';
+            if (r.rating) {
+                const count = Number(r.rating);
+                for (let i = 1; i <= 5; i++) {
+                    const color = i <= count ? '#facc15' : '#d1d5db';
+                    reviewStars += `<svg width="10" height="10" viewBox="0 0 24 24" fill="${color}" style="display:inline-block; vertical-align:middle; margin-left:1px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+                }
+            }
             const item = document.createElement('div');
             item.className = 'review-item';
             item.innerHTML = `
                 <div style="color: var(--accent-color); font-size: 12px; margin-bottom: 4px;">
-                    Кому: ${tName} ${ratingStars ? `(Оценка: ${ratingStars})` : ''}<br>
+                    Кому: ${tName} ${reviewStars ? `(Оценка: ${reviewStars})` : ''}<br>
                     От: ${r.author || 'Студент'}
                 </div>
                 <div>${r.text}</div>
