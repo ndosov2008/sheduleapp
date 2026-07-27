@@ -434,25 +434,14 @@ if(resetSettingsBtn) {
 }
 
 async function fetchGoogleSheet(action, payload = {}) {
+    payload.action = action;
     try {
-        if (action === 'getReviews') {
-            const response = await fetch(`${GOOGLE_APP_URL}?action=getReviews`, {
-                method: 'GET',
-                redirect: 'follow'
-            });
-            const resJson = await response.json();
-            return resJson;
-        } else {
-            payload.action = action;
-            const response = await fetch(GOOGLE_APP_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload),
-                redirect: 'follow'
-            });
-            const resJson = await response.json();
-            return resJson;
-        }
+        const response = await fetch(GOOGLE_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+        });
+        return await response.json();
     } catch (error) {
         console.error("Ошибка при работе с БД:", error);
         return null;
@@ -476,8 +465,7 @@ async function renderTeachers() {
         card.className = 'schedule-card teacher-card-clickable';
         card.dataset.id = index; 
         
-        // Надежное сравнение строковых ID и статусов в нижнем регистре
-        const teacherReviews = allReviews.filter(r => String(r.teacherId) === String(index) && String(r.status).trim().toLowerCase() === 'approved');
+        const teacherReviews = allReviews.filter(r => String(r.teacherid) === String(index) && String(r.status).trim() === 'approved');
         const ratings = teacherReviews.filter(r => r.rating !== undefined && r.rating !== "").map(r => Number(r.rating));
         const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—";
 
@@ -584,7 +572,7 @@ async function renderTeacherReviews(teacherId) {
         return;
     }
 
-    const approvedReviews = allReviews.filter(r => String(r.teacherId) === String(teacherId) && String(r.status).trim().toLowerCase() === 'approved');
+    const approvedReviews = allReviews.filter(r => String(r.teacherid) === String(teacherId) && String(r.status).trim() === 'approved');
     const currentUserId = tg.initDataUnsafe?.user?.id;
     const isAdmin = (currentUserId === ADMIN_TG_ID || localStorage.getItem('force_admin') === 'true');
 
@@ -593,7 +581,7 @@ async function renderTeacherReviews(teacherId) {
         list.innerHTML = '<p style="color: var(--hint-color); font-size: 13px; text-align: center;">Пока нет отзывов.</p>';
     } else {
         approvedReviews.forEach(r => {
-            const canDelete = isAdmin || (currentUserId && String(r.authorId) === String(currentUserId));
+            const canDelete = isAdmin || (currentUserId && String(r.authorid) === String(currentUserId));
             const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 12px; cursor: pointer; color: var(--hint-color);">[Удалить]</button>` : '';
             
             let reviewStars = '';
@@ -716,14 +704,14 @@ async function renderAdminReviews() {
         return;
     }
 
-    const pendingReviews = allReviews.filter(r => String(r.status).trim().toLowerCase() === 'pending');
+    const pendingReviews = allReviews.filter(r => String(r.status).trim() === 'pending');
 
     list.innerHTML = '';
     if (pendingReviews.length === 0) {
         list.innerHTML = '<p style="color: var(--hint-color); font-size: 13px; text-align: center;">Все чисто! Новых отзывов нет.</p>';
     } else {
         pendingReviews.forEach(r => {
-            const tName = teachersData[r.teacherId]?.name || "Неизвестный препод";
+            const tName = teachersData[r.teacherid]?.name || "Неизвестный препод";
             let reviewStars = '';
             if (r.rating) {
                 const count = Number(r.rating);
