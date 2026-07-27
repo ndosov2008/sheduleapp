@@ -434,16 +434,25 @@ if(resetSettingsBtn) {
 }
 
 async function fetchGoogleSheet(action, payload = {}) {
-    payload.action = action;
     try {
-        const response = await fetch(GOOGLE_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-        });
-        const resJson = await response.json();
-        console.log(`API Action [${action}]:`, resJson);
-        return resJson;
+        if (action === 'getReviews') {
+            const response = await fetch(`${GOOGLE_APP_URL}?action=getReviews`, {
+                method: 'GET',
+                redirect: 'follow'
+            });
+            const resJson = await response.json();
+            return resJson;
+        } else {
+            payload.action = action;
+            const response = await fetch(GOOGLE_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload),
+                redirect: 'follow'
+            });
+            const resJson = await response.json();
+            return resJson;
+        }
     } catch (error) {
         console.error("Ошибка при работе с БД:", error);
         return null;
