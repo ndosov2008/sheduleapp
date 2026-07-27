@@ -470,7 +470,8 @@ async function fetchGoogleSheet(action, payload = {}) {
         }
     } catch (error) {
         console.error("Ошибка Supabase:", error);
-        return null;
+        // ВОТ ТУТ МЫ ПЕРЕДАЕМ ОШИБКУ НАРУЖУ
+        return { success: false, errorMsg: error.message || JSON.stringify(error) };
     }
 }
 
