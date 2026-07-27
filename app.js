@@ -39,14 +39,14 @@ const sessionExamsData = {
 };
 
 const teachersData = [
-    { name: "Е.А. Блинова", subject: "Пока не известно", strictness: "Пока не известно", info: "Пока не известно" },
-    { name: "Н.А. Жиляк", subject: "Пока не известно", strictness: "Пока не известно", info: "Пока не известно" },
-    { name: "Е.В. Барковский", subject: "Пока не известно", strictness: "Пока не известно", info: "Пока не известно" },
-    { name: "В.В. Смелов", subject: "Пока не известно", strictness: "Пока не известно", info: "Пока не известно" },
-    { name: "Д.В. Шиман", subject: "Пока не известно", strictness: "Пока не известно", info: "Пока не известно" },
-    { name: "Н.И. Белодед", subject: "Пока не известно", strictness: "Пока не известно", info: "Пока не известно" },
-    { name: "Е.А. Гончар", subject: "Пока не известно", strictness: "Пока не известно", info: "Пока не известно" },
-    { name: "А.С. Наркевич", subject: "Пока не известно", strictness: "Пока не известно", info: "Пока не известно" }
+    { name: "Е.А. Блинова" },
+    { name: "Н.А. Жиляк" },
+    { name: "Е.В. Барковский" },
+    { name: "В.В. Смелов" },
+    { name: "Д.В. Шиман" },
+    { name: "Н.И. Белодед" },
+    { name: "Е.А. Гончар" },
+    { name: "А.С. Наркевич" }
 ];
 
 let previousScreen = 'main-menu-screen';
@@ -264,7 +264,7 @@ function renderSchedule() {
     const dayData = groupData[state.day] || [];
 
     if (dayData.length === 0) {
-        scheduleContainer.innerHTML = '<p style="text-align:center; color: var(--hint-color); margin-top: 20px;">Нет пар на этот день 🎉</p>';
+        scheduleContainer.innerHTML = '<p style="text-align:center; color: var(--hint-color); margin-top: 20px;">Нет пар на этот день</p>';
         return;
     }
 
@@ -274,9 +274,9 @@ function renderSchedule() {
         card.innerHTML = `
             <div class="subject-title">${item.subject} <span class="subject-type">${item.type}</span></div>
             <div class="details">
-                <p>🕒 ${item.time}</p>
-                <p>👨‍🏫 ${item.teacher || '-'}</p>
-                <p>🚪 ${item.room}</p>
+                <p>Время: ${item.time}</p>
+                <p>Преподаватель: ${item.teacher || '-'}</p>
+                <p>Аудитория: ${item.room}</p>
             </div>
         `;
         scheduleContainer.appendChild(card);
@@ -336,7 +336,7 @@ function renderSession() {
         card.innerHTML = `
             <div class="subject-title">${exam.subject} <span class="subject-type">${exam.type}</span></div>
             <div class="details" style="margin-bottom: 10px;">
-                <p>👨‍🏫 ${exam.teacher}</p>
+                <p>Преподаватель: ${exam.teacher}</p>
             </div>
             <div class="grade-selector" style="display: flex; gap: 8px; align-items: center;">
                 <span style="font-size: 14px; color: var(--hint-color);">Результат:</span>
@@ -470,22 +470,22 @@ async function renderTeachers() {
         
         const teacherReviews = allReviews.filter(r => r.teacherId == index && r.status === 'approved');
         const ratings = teacherReviews.filter(r => r.rating).map(r => Number(r.rating));
-        const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "Нет оценок";
+        const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—";
 
         const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888888'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
         const photoSrc = t.photo ? t.photo : defaultAvatar;
 
         card.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
                 <div style="display: flex; align-items: center; gap: 14px;">
                     <img src="${photoSrc}" alt="Фото" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color);">
                     <div class="subject-title" style="margin-bottom: 0;">${t.name}</div>
                 </div>
                 <div style="background: var(--accent-color); color: #fff; padding: 4px 10px; border-radius: 10px; font-weight: bold; font-size: 14px;">
-                    ⭐ ${avgRating}
+                    [${avgRating}]
                 </div>
             </div>
-            <div style="margin-top: 10px; font-size: 12px; color: var(--accent-color); text-align: right;">Нажать для оценки и отзывов ➔</div>
+            <div style="margin-top: 10px; font-size: 12px; color: var(--accent-color); text-align: right;">Подробнее ➔</div>
         `;
         
         card.addEventListener('click', () => openTeacherModal(index));
@@ -507,13 +507,13 @@ async function openTeacherModal(index) {
     
     document.getElementById('teacher-modal-info').innerHTML = `
         <div style="margin-bottom: 10px;">
-            <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 5px;">Ваша оценка преподавателю:</label>
+            <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 5px;">Оценка:</label>
             <select id="review-rating" style="width: 100%; background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 8px; border-radius: 8px;">
-                <option value="5">⭐⭐⭐⭐⭐ (5 - Отлично)</option>
-                <option value="4">⭐⭐⭐⭐ (4 - Хорошо)</option>
-                <option value="3">⭐⭐⭐ (3 - Нормально)</option>
-                <option value="2">⭐⭐ (2 - Плохо)</option>
-                <option value="1">⭐ (1 - Ужасно)</option>
+                <option value="5">5 - Отлично</option>
+                <option value="4">4 - Хорошо</option>
+                <option value="3">3 - Нормально</option>
+                <option value="2">2 - Плохо</option>
+                <option value="1">1 - Ужасно</option>
             </select>
         </div>
     `;
@@ -544,13 +544,13 @@ async function renderTeacherReviews(teacherId) {
     } else {
         approvedReviews.forEach(r => {
             const canDelete = isAdmin || (currentUserId && r.authorId == currentUserId);
-            const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 14px; cursor: pointer;">🗑️</button>` : '';
-            const ratingBadge = r.rating ? `⭐ ${r.rating}` : '';
+            const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 14px; cursor: pointer;">[x]</button>` : '';
+            const ratingBadge = r.rating ? `[${r.rating}]` : '';
 
             list.innerHTML += `
                 <div class="review-item" style="padding-top: 8px;">
                     <div style="font-size: 12px; color: var(--accent-color); margin-bottom: 6px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
-                        <span>👤 ${r.author || 'Студент'} ${ratingBadge ? `(${ratingBadge})` : ''}</span>
+                        <span>${r.author || 'Студент'} ${ratingBadge ? `${ratingBadge}` : ''}</span>
                         ${deleteBtnHtml}
                     </div>
                     <div style="font-size: 13px;">${r.text}</div>
@@ -564,7 +564,7 @@ document.getElementById('teacher-reviews-list').addEventListener('click', async 
     if (btn) {
         const id = btn.dataset.id;
         if (confirm("Удалить этот отзыв навсегда?")) {
-            btn.textContent = "⌛";
+            btn.textContent = "...";
             await fetchGoogleSheet('deleteReview', { id: id });
             await renderTeacherReviews(currentTeacherId);
         }
@@ -668,8 +668,8 @@ async function renderAdminReviews() {
             item.className = 'review-item';
             item.innerHTML = `
                 <div style="color: var(--accent-color); font-size: 12px; margin-bottom: 4px;">
-                    Кому: ${tName} ${r.rating ? `(Оценка: ⭐ ${r.rating})` : ''}<br>
-                    От: 👤 ${r.author || 'Студент'}
+                    Кому: ${tName} ${r.rating ? `(Оценка: ${r.rating})` : ''}<br>
+                    От: ${r.author || 'Студент'}
                 </div>
                 <div>${r.text}</div>
                 <div class="admin-action-btns">
@@ -689,11 +689,11 @@ if(adminReviewsList) {
         if (!id) return;
 
         if (e.target.classList.contains('btn-approve')) {
-            e.target.textContent = "⌛...";
+            e.target.textContent = "...";
             await fetchGoogleSheet('updateStatus', { id: id, status: 'approved' });
             await renderAdminReviews(); 
         } else if (e.target.classList.contains('btn-reject')) {
-            e.target.textContent = "⌛...";
+            e.target.textContent = "...";
             await fetchGoogleSheet('deleteReview', { id: id });
             await renderAdminReviews(); 
         }
