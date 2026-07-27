@@ -3,7 +3,7 @@ tg.expand();
 tg.ready();
 
 // Твоя ссылка на Google Apps Script
-const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbzxreBhW-hH-C-a9Zd9dkkAnNqaID5xFHtlknUSJwkircVyMQo0nG6RIB9p6S6IuZBB/exec";
+const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyHnShrdO0c5QJ268oHqhgRAG5hWR9S39cUnIeVQHIFGMf66Ro0m3u_r6Yy46p3SXfpJg/exec";
 const ADMIN_TG_ID = 5555823645;
 let currentTeacherId = null;
 
