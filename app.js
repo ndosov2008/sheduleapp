@@ -2,7 +2,6 @@ const tg = window.Telegram.WebApp;
 tg.expand();
 tg.ready();
 
-// Твоя новая ссылка на Google Apps Script
 const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbwQsWj07JbHMyUPrt_Ft0vkZw9UnyRRg-JRMXM0qSyj5GtvsA6838Gy-VB3xj1zw58G6A/exec";
 const ADMIN_TG_ID = 5555823645;
 let currentTeacherId = null;
@@ -85,7 +84,6 @@ async function initApp() {
 
 initApp();
 
-// --- УПРАВЛЕНИЕ ТЕМАМИ И ФОНОМ ---
 function setTheme(themeName) {
     document.body.className = `theme-${themeName}`;
     
@@ -133,7 +131,6 @@ if(removeBgBtn) {
     });
 }
 
-// --- УПРАВЛЕНИЕ ЭКРАНАМИ И МЕНЮ ---
 function showScreen(screenId) {
     const currentActive = document.querySelector('.screen.active');
     if (currentActive && currentActive.id !== 'settings-screen') {
@@ -177,7 +174,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// --- ВЫБОР КУРСА И ГРУППЫ ---
 const groupBlock = document.getElementById('group-block');
 const groupGrid = document.getElementById('group-grid');
 const submitBtn = document.getElementById('submit-btn');
@@ -231,7 +227,6 @@ if(submitBtn) {
     });
 }
 
-// --- РАСПИСАНИЕ ---
 function showScheduleScreen() {
     showScreen('schedule-screen');
     document.getElementById('current-selection-title').textContent = `${state.course} курс, гр. ${state.group}`;
@@ -284,7 +279,6 @@ function renderSchedule() {
     });
 }
 
-// --- СЕССИЯ И ОЦЕНКИ ---
 let currentSessionExams = [];
 
 function showSessionScreen() {
@@ -381,7 +375,6 @@ function calculateGPA() {
     if(gpaScoreEl) gpaScoreEl.textContent = gpa;
 }
 
-// --- НАСТРОЙКИ ---
 const openSettingsBtn = document.getElementById('open-settings-btn');
 const scheduleSettingsBtn = document.getElementById('schedule-settings-btn');
 const closeSettingsBtn = document.getElementById('close-settings-btn');
@@ -434,8 +427,6 @@ if(resetSettingsBtn) {
         tg.showAlert('Автозапуск сброшен.');
     });
 }
-
-// --- ЛОГИКА ОТЗЫВОВ И АДМИНКИ (GOOGLE SHEETS) ---
 
 async function fetchGoogleSheet(action, payload = {}) {
     payload.action = action;
@@ -511,11 +502,11 @@ async function openTeacherModal(index) {
         <div style="margin-bottom: 15px; text-align: center;">
             <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 8px;">Оценка:</label>
             <div id="star-rating-picker" style="display: flex; justify-content: center; gap: 8px;">
-                <button type="button" class="star-btn" data-value="1" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">1</button>
-                <button type="button" class="star-btn" data-value="2" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">2</button>
-                <button type="button" class="star-btn" data-value="3" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">3</button>
-                <button type="button" class="star-btn" data-value="4" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">4</button>
-                <button type="button" class="star-btn" data-value="5" style="background: var(--accent-color); color: #fff; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">5</button>
+                <button type="button" class="star-btn" data-value="1" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">*</button>
+                <button type="button" class="star-btn" data-value="2" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">**</button>
+                <button type="button" class="star-btn" data-value="3" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">***</button>
+                <button type="button" class="star-btn" data-value="4" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">****</button>
+                <button type="button" class="star-btn" data-value="5" style="background: var(--accent-color); color: #fff; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">*****</button>
             </div>
         </div>
     `;
@@ -563,7 +554,8 @@ async function renderTeacherReviews(teacherId) {
         approvedReviews.forEach(r => {
             const canDelete = isAdmin || (currentUserId && r.authorId == currentUserId);
             const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 12px; cursor: pointer; color: var(--hint-color);">[Удалить]</button>` : '';
-            const ratingBadge = r.rating ? `[Оценка: ${r.rating}/5]` : '';
+            const ratingStars = r.rating ? '*'.repeat(Number(r.rating)) : '';
+            const ratingBadge = ratingStars ? `[Оценка: ${ratingStars}]` : '';
 
             list.innerHTML += `
                 <div class="review-item" style="padding-top: 8px;">
@@ -644,7 +636,6 @@ if(closeModalBtn) {
     });
 }
 
-// --- АДМИН ПАНЕЛЬ ---
 const adminModal = document.getElementById('admin-modal');
 const adminPanelBtn = document.getElementById('admin-panel-btn');
 
@@ -681,11 +672,12 @@ async function renderAdminReviews() {
     } else {
         pendingReviews.forEach(r => {
             const tName = teachersData[r.teacherId]?.name || "Неизвестный препод";
+            const ratingStars = r.rating ? '*'.repeat(Number(r.rating)) : '';
             const item = document.createElement('div');
             item.className = 'review-item';
             item.innerHTML = `
                 <div style="color: var(--accent-color); font-size: 12px; margin-bottom: 4px;">
-                    Кому: ${tName} ${r.rating ? `(Оценка: ${r.rating}/5)` : ''}<br>
+                    Кому: ${tName} ${ratingStars ? `(Оценка: ${ratingStars})` : ''}<br>
                     От: ${r.author || 'Студент'}
                 </div>
                 <div>${r.text}</div>
