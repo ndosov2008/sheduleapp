@@ -434,16 +434,35 @@ if(resetSettingsBtn) {
 }
 
 async function fetchGoogleSheet(action, payload = {}) {
-    payload.action = action;
     try {
-        const response = await fetch(GOOGLE_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-        });
-        return await response.json();
+        if (action === 'getReviews') {
+            const { data, error } = await supabase.from('reviews').select('*');
+            if (error) throw error;
+            return data;
+        } 
+        else if (action === 'addReview') {
+            const { error } = await supabase.from('reviews').insert([payload]);
+            if (error) throw error;
+            return { success: true };
+        } 
+        else if (action === 'updateStatus') {
+            const { error } = await supabase
+                .from('reviews')
+                .update({ status: payload.status })
+                .eq('id', payload.id);
+            if (error) throw error;
+            return { success: true };
+        } 
+        else if (action === 'deleteReview') {
+            const { error } = await supabase
+                .from('reviews')
+                .delete()
+                .eq('id', payload.id);
+            if (error) throw error;
+            return { success: true };
+        }
     } catch (error) {
-        console.error("Ошибка при работе с БД:", error);
+        console.error("Ошибка Supabase:", error);
         return null;
     }
 }
