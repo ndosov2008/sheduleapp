@@ -57,6 +57,11 @@ function getTodayDayCode() {
     return jsDay.toString();
 }
 
+// Получение текущего цвета акцента из CSS-переменной
+function getAccentColor() {
+    return getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#3390ec';
+}
+
 async function initApp() {
     try {
         const response = await fetch('data.json');
@@ -95,6 +100,9 @@ function setTheme(themeName) {
         btn.classList.toggle('active-theme', btn.dataset.theme === themeName);
     });
     localStorage.setItem('app_theme', themeName);
+    
+    // Обновляем звезды в открытом модальном окне, если оно открыто, под новый акцентный цвет
+    updateStarsColor();
 }
 
 document.addEventListener('click', (e) => {
@@ -498,26 +506,7 @@ async function openTeacherModal(index) {
         <h2 style="font-size: 18px;">${t.name}</h2>
     `;
 
-    // Генерация SVG звездочек для выбора оценки (все активные по умолчанию до 5)
-    let starsHtml = '';
-    for (let i = 1; i <= 5; i++) {
-        starsHtml += `
-            <button type="button" class="star-btn" data-value="${i}" style="background: none; border: none; cursor: pointer; padding: 4px;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="${i <= 5 ? '#facc15' : '#d1d5db'}" stroke="${i <= 5 ? '#ca8a04' : '#9ca3af'}" stroke-width="1">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
-            </button>
-        `;
-    }
-    
-    document.getElementById('teacher-modal-info').innerHTML = `
-        <div style="margin-bottom: 15px; text-align: center;">
-            <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 8px;">Оценка:</label>
-            <div id="star-rating-picker" style="display: flex; justify-content: center; gap: 4px;">
-                ${starsHtml}
-            </div>
-        </div>
-    `;
+    updateStarsPickerDOM();
 
     document.getElementById('teacher-reviews-list').innerHTML = '<p style="color: var(--hint-color); text-align: center;">Загрузка отзывов...</p>';
     teacherModal.classList.remove('hidden');
@@ -525,26 +514,59 @@ async function openTeacherModal(index) {
     await renderTeacherReviews(index);
 }
 
+function updateStarsPickerDOM() {
+    const accentColor = getAccentColor();
+    let starsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+        const isActive = i <= selectedRatingValue;
+        const fillColor = isActive ? accentColor : 'transparent';
+        const strokeColor = isActive ? accentColor : 'var(--hint-color)';
+        const opacity = isActive ? '1' : '0.4';
+
+        starsHtml += `
+            <button type="button" class="star-btn" data-value="${i}" style="background: none; border: none; cursor: pointer; padding: 4px; opacity: ${opacity}; transition: opacity 0.2s;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+            </button>
+        `;
+    }
+    
+    const pickerContainer = document.getElementById('star-rating-picker');
+    if (pickerContainer) {
+        pickerContainer.innerHTML = starsHtml;
+    } else {
+        const infoBlock = document.getElementById('teacher-modal-info');
+        if (infoBlock) {
+            infoBlock.innerHTML = `
+                <div style="margin-bottom: 15px; text-align: center;">
+                    <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 8px;">Оценка:</label>
+                    <div id="star-rating-picker" style="display: flex; justify-content: center; gap: 4px;">
+                        ${starsHtml}
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
+
+function updateStarsColor() {
+    if (!teacherModal.classList.contains('hidden')) {
+        updateStarsPickerDOM();
+    }
+}
+
 document.addEventListener('click', (e) => {
     const starBtn = e.target.closest('.star-btn');
     if (starBtn) {
         selectedRatingValue = parseInt(starBtn.dataset.value);
-        document.querySelectorAll('.star-btn').forEach(btn => {
-            const val = parseInt(btn.dataset.value);
-            const svg = btn.querySelector('svg');
-            if (val <= selectedRatingValue) {
-                svg.setAttribute('fill', '#facc15');
-                svg.setAttribute('stroke', '#ca8a04');
-            } else {
-                svg.setAttribute('fill', '#d1d5db');
-                svg.setAttribute('stroke', '#9ca3af');
-            }
-        });
+        updateStarsPickerDOM();
     }
 });
 
 async function renderTeacherReviews(teacherId) {
     const list = document.getElementById('teacher-reviews-list');
+    const accentColor = getAccentColor();
     
     const allReviews = await fetchGoogleSheet('getReviews');
     
@@ -569,8 +591,11 @@ async function renderTeacherReviews(teacherId) {
             if (r.rating) {
                 const count = Number(r.rating);
                 for (let i = 1; i <= 5; i++) {
-                    const color = i <= count ? '#facc15' : '#d1d5db';
-                    reviewStars += `<svg width="12" height="12" viewBox="0 0 24 24" fill="${color}" style="display:inline-block; vertical-align:middle; margin-left:1px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+                    const isActive = i <= count;
+                    const fillColor = isActive ? accentColor : 'transparent';
+                    const strokeColor = isActive ? accentColor : 'var(--hint-color)';
+                    const opacity = isActive ? '1' : '0.3';
+                    reviewStars += `<svg width="12" height="12" viewBox="0 0 24 24" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-left:1px; opacity:${opacity};"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
                 }
             }
 
@@ -672,6 +697,7 @@ if(closeAdminBtn) {
 
 async function renderAdminReviews() {
     const list = document.getElementById('admin-reviews-list');
+    const accentColor = getAccentColor();
     list.innerHTML = '<p style="color: var(--hint-color); text-align: center;">Загрузка отзывов...</p>';
 
     const allReviews = await fetchGoogleSheet('getReviews');
@@ -693,8 +719,11 @@ async function renderAdminReviews() {
             if (r.rating) {
                 const count = Number(r.rating);
                 for (let i = 1; i <= 5; i++) {
-                    const color = i <= count ? '#facc15' : '#d1d5db';
-                    reviewStars += `<svg width="10" height="10" viewBox="0 0 24 24" fill="${color}" style="display:inline-block; vertical-align:middle; margin-left:1px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+                    const isActive = i <= count;
+                    const fillColor = isActive ? accentColor : 'transparent';
+                    const strokeColor = isActive ? accentColor : 'var(--hint-color)';
+                    const opacity = isActive ? '1' : '0.3';
+                    reviewStars += `<svg width="10" height="10" viewBox="0 0 24 24" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-left:1px; opacity:${opacity};"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
                 }
             }
             const item = document.createElement('div');
