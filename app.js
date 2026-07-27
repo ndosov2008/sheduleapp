@@ -470,7 +470,6 @@ async function fetchGoogleSheet(action, payload = {}) {
         }
     } catch (error) {
         console.error("Ошибка Supabase:", error);
-        // Выводим ошибку наружу для дебага в WebApp
         return { success: false, errorMsg: error.message || JSON.stringify(error) };
     }
 }
@@ -659,6 +658,17 @@ if(submitReviewBtn) {
             return;
         }
 
+        // --- БЛОК АВТОМОДЕРАЦИИ ---
+        const badWords = ['дурак', 'дебил', 'сука', 'хрен', 'мразь', 'бля', 'хуй', 'пизд']; 
+        const lowerText = text.toLowerCase();
+        
+        const isBad = badWords.some(word => lowerText.includes(word));
+        if (isBad) {
+            tg.showAlert("Пожалуйста, выражайтесь культурно. Отзыв содержит запрещенные слова.");
+            return; 
+        }
+        // --- КОНЕЦ АВТОМОДЕРАЦИИ ---
+
         const user = tg.initDataUnsafe?.user;
         let authorName = "Анонимный Студент";
         let authorId = null;
@@ -671,7 +681,6 @@ if(submitReviewBtn) {
         submitReviewBtn.disabled = true;
         submitReviewBtn.textContent = "Отправка...";
 
-        // Формируем объект без передачи id (база сгенерирует сама)
         const newReview = {
             teacherid: currentTeacherId.toString(),
             text: text,
@@ -687,7 +696,6 @@ if(submitReviewBtn) {
             textInput.value = '';
             tg.showAlert("Отзыв и оценка отправлены на модерацию!");
         } else {
-            // Выводим точную ошибку из базы на экран Telegram
             tg.showAlert("Ошибка БД: " + (res?.errorMsg || "Неизвестная ошибка"));
         }
 
