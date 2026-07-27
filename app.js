@@ -57,7 +57,6 @@ function getTodayDayCode() {
     return jsDay.toString();
 }
 
-// Получение текущего цвета акцента из CSS-переменной
 function getAccentColor() {
     return getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#3390ec';
 }
@@ -100,8 +99,6 @@ function setTheme(themeName) {
         btn.classList.toggle('active-theme', btn.dataset.theme === themeName);
     });
     localStorage.setItem('app_theme', themeName);
-    
-    // Обновляем звезды в открытом модальном окне, если оно открыто, под новый акцентный цвет
     updateStarsColor();
 }
 
@@ -468,7 +465,8 @@ async function renderTeachers() {
         card.className = 'schedule-card teacher-card-clickable';
         card.dataset.id = index; 
         
-        const teacherReviews = allReviews.filter(r => r.teacherId == index && r.status === 'approved');
+        // Надежное сопоставление через строки, чтобы исключить баги с типами данных
+        const teacherReviews = allReviews.filter(r => String(r.teacherId) === String(index) && String(r.status).trim().toLowerCase() === 'approved');
         const ratings = teacherReviews.filter(r => r.rating).map(r => Number(r.rating));
         const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—";
 
@@ -575,7 +573,7 @@ async function renderTeacherReviews(teacherId) {
         return;
     }
 
-    const approvedReviews = allReviews.filter(r => r.teacherId == teacherId && r.status === 'approved');
+    const approvedReviews = allReviews.filter(r => String(r.teacherId) === String(teacherId) && String(r.status).trim().toLowerCase() === 'approved');
     const currentUserId = tg.initDataUnsafe?.user?.id;
     const isAdmin = (currentUserId === ADMIN_TG_ID || localStorage.getItem('force_admin') === 'true');
 
@@ -584,7 +582,7 @@ async function renderTeacherReviews(teacherId) {
         list.innerHTML = '<p style="color: var(--hint-color); font-size: 13px; text-align: center;">Пока нет отзывов.</p>';
     } else {
         approvedReviews.forEach(r => {
-            const canDelete = isAdmin || (currentUserId && r.authorId == currentUserId);
+            const canDelete = isAdmin || (currentUserId && String(r.authorId) === String(currentUserId));
             const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 12px; cursor: pointer; color: var(--hint-color);">[Удалить]</button>` : '';
             
             let reviewStars = '';
@@ -707,7 +705,7 @@ async function renderAdminReviews() {
         return;
     }
 
-    const pendingReviews = allReviews.filter(r => r.status === 'pending');
+    const pendingReviews = allReviews.filter(r => String(r.status).trim().toLowerCase() === 'pending');
 
     list.innerHTML = '';
     if (pendingReviews.length === 0) {
