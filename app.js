@@ -481,16 +481,46 @@ function renderTeacherReviews(teacherId) {
     const allReviews = getReviews();
     const approvedReviews = allReviews.filter(r => r.teacherId === teacherId && r.status === 'approved');
 
+    // Проверяем, админ ли сейчас зашел, или сам автор отзыва
+    const currentUserId = tg.initDataUnsafe?.user?.id;
+    const isAdmin = (currentUserId === ADMIN_TG_ID || localStorage.getItem('force_admin') === 'true');
+
     list.innerHTML = '';
     if (approvedReviews.length === 0) {
         list.innerHTML = '<p style="color: var(--hint-color); font-size: 13px; text-align: center;">Пока нет отзывов.</p>';
     } else {
         approvedReviews.forEach(r => {
-            list.innerHTML += `<div class="review-item">${r.text}</div>`;
+            // Разрешаем удалить отзыв, если это админ ИЛИ если пользователь — автор этого отзыва
+            const canDelete = isAdmin || (currentUserId && r.authorId === currentUserId);
+            const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 14px; cursor: pointer;">🗑️</button>` : '';
+
+            list.innerHTML += `
+                <div class="review-item" style="padding-top: 8px;">
+                    <div style="font-size: 12px; color: var(--accent-color); margin-bottom: 6px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
+                        👤 ${r.author || 'Студент'}
+                        ${deleteBtnHtml}
+                    </div>
+                    <div style="font-size: 13px;">${r.text}</div>
+                </div>`;
         });
     }
 }
 
+// Обработка клика по иконке корзины для УДАЛЕНИЯ уже опубликованного отзыва
+document.getElementById('teacher-reviews-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('.delete-review-btn');
+    if (btn) {
+        const id = parseInt(btn.dataset.id);
+        if (confirm("Вы уверены, что хотите безвозвратно удалить этот отзыв?")) {
+            let reviews = getReviews();
+            reviews = reviews.filter(r => r.id !== id);
+            saveReviews(reviews);
+            renderTeacherReviews(currentTeacherId); // Обновляем список сразу после удаления
+        }
+    }
+});
+
+// Отправка отзыва
 document.getElementById('submit-review-btn').addEventListener('click', () => {
     const textInput = document.getElementById('review-text');
     const text = textInput.value.trim();
@@ -500,10 +530,23 @@ document.getElementById('submit-review-btn').addEventListener('click', () => {
         return;
     }
 
+    // Достаем имя пользователя из Telegram
+    const user = tg.initDataUnsafe?.user;
+    let authorName = "Анонимный Студент";
+    let authorId = null;
+
+    if (user) {
+        // Если есть юзернейм (@ник), берем его. Если нет — берем просто Имя пользователя.
+        authorName = user.username ? `@${user.username}` : user.first_name;
+        authorId = user.id;
+    }
+
     const newReview = {
         id: Date.now(),
         teacherId: currentTeacherId,
         text: text,
+        author: authorName,   // Сохраняем имя
+        authorId: authorId,   // Сохраняем ID, чтобы юзер мог потом удалить свой отзыв
         status: 'pending' 
     };
 
@@ -546,8 +589,12 @@ function renderAdminReviews() {
             const tName = teachersData[r.teacherId].name;
             const item = document.createElement('div');
             item.className = 'review-item';
+            // В админке теперь тоже видно, кто написал отзыв
             item.innerHTML = `
-                <div style="color: var(--accent-color); font-size: 12px; margin-bottom: 4px;">Кому: ${tName}</div>
+                <div style="color: var(--accent-color); font-size: 12px; margin-bottom: 4px;">
+                    Кому: ${tName}<br>
+                    От: 👤 ${r.author || 'Студент'}
+                </div>
                 <div>${r.text}</div>
                 <div class="admin-action-btns">
                     <button class="btn-approve" data-id="${r.id}">Одобрить</button>
