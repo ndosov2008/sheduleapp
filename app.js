@@ -681,26 +681,30 @@ if(submitReviewBtn) {
         submitReviewBtn.disabled = true;
         submitReviewBtn.textContent = "Отправка...";
 
+        // МЕНЯЕМ СТАТУС НА approved
         const newReview = {
             teacherid: currentTeacherId.toString(),
             text: text,
             rating: rating,
             author: authorName,
             authorid: authorId ? authorId.toString() : "",
-            status: 'pending' 
+            status: 'approved' // <-- Теперь отзыв сразу считается одобренным
         };
 
         const res = await fetchGoogleSheet('addReview', newReview);
 
         if (res && res.success) {
             textInput.value = '';
-            tg.showAlert("Отзыв и оценка отправлены на модерацию!");
+            tg.showAlert("Отзыв успешно опубликован!"); // Изменили текст уведомления
+            
+            // Сразу обновляем список отзывов, чтобы пользователь увидел свой
+            await renderTeacherReviews(currentTeacherId);
         } else {
             tg.showAlert("Ошибка БД: " + (res?.errorMsg || "Неизвестная ошибка"));
         }
 
         submitReviewBtn.disabled = false;
-        submitReviewBtn.textContent = "Отправить на модерацию";
+        submitReviewBtn.textContent = "Оставить отзыв"; // Изменили текст на кнопке
     });
 }
 
