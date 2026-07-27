@@ -2,11 +2,11 @@ const tg = window.Telegram.WebApp;
 tg.expand();
 tg.ready();
 
-// Твоя ссылка на Google Apps Script
-const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyHnShrdO0c5QJ268oHqhgRAG5hWR9S39cUnIeVQHIFGMf66Ro0m3u_r6Yy46p3SXfpJg/exec";
+// Твоя новая ссылка на Google Apps Script
+const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbwQsWj07JbHMyUPrt_Ft0vkZw9UnyRRg-JRMXM0qSyj5GtvsA6838Gy-VB3xj1zw58G6A/exec";
 const ADMIN_TG_ID = 5555823645;
 let currentTeacherId = null;
-let selectedRatingValue = 5; // По умолчанию 5 звезд
+let selectedRatingValue = 5;
 
 let state = {
     course: null,
@@ -469,7 +469,6 @@ async function renderTeachers() {
         card.className = 'schedule-card teacher-card-clickable';
         card.dataset.id = index; 
         
-        // Считаем средний балл по одобренным отзывам
         const teacherReviews = allReviews.filter(r => r.teacherId == index && r.status === 'approved');
         const ratings = teacherReviews.filter(r => r.rating).map(r => Number(r.rating));
         const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—";
@@ -487,7 +486,7 @@ async function renderTeachers() {
                     [${avgRating}]
                 </div>
             </div>
-            <div style="margin-top: 10px; font-size: 12px; color: var(--accent-color); text-align: right;">Подробнее ➔</div>
+            <div style="margin-top: 10px; font-size: 12px; color: var(--accent-color); text-align: right;">Подробнее -></div>
         `;
         
         card.addEventListener('click', () => openTeacherModal(index));
@@ -498,7 +497,7 @@ async function renderTeachers() {
 const teacherModal = document.getElementById('teacher-modal');
 async function openTeacherModal(index) {
     currentTeacherId = index;
-    selectedRatingValue = 5; // Сброс по умолчанию на 5 звезд
+    selectedRatingValue = 5; 
     const t = teachersData[index];
     const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888888'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
     const photoSrc = t.photo ? t.photo : defaultAvatar;
@@ -508,21 +507,18 @@ async function openTeacherModal(index) {
         <h2 style="font-size: 18px;">${t.name}</h2>
     `;
     
-    // Рендерим интерактивные 5 звезд для выбора оценки
     document.getElementById('teacher-modal-info').innerHTML = `
         <div style="margin-bottom: 15px; text-align: center;">
-            <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 8px;">Ваша оценка:</label>
-            <div id="star-rating-picker" style="display: flex; justify-content: center; gap: 8px; cursor: pointer;">
-                <span class="star-btn" data-value="1" style="font-size: 24px; color: var(--accent-color);">★</span>
-                <span class="star-btn" data-value="2" style="font-size: 24px; color: var(--accent-color);">★</span>
-                <span class="star-btn" data-value="3" style="font-size: 24px; color: var(--accent-color);">★</span>
-                <span class="star-btn" data-value="4" style="font-size: 24px; color: var(--accent-color);">★</span>
-                <span class="star-btn" data-value="5" style="font-size: 24px; color: var(--accent-color);">★</span>
+            <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 8px;">Оценка:</label>
+            <div id="star-rating-picker" style="display: flex; justify-content: center; gap: 8px;">
+                <button type="button" class="star-btn" data-value="1" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">1</button>
+                <button type="button" class="star-btn" data-value="2" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">2</button>
+                <button type="button" class="star-btn" data-value="3" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">3</button>
+                <button type="button" class="star-btn" data-value="4" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">4</button>
+                <button type="button" class="star-btn" data-value="5" style="background: var(--accent-color); color: #fff; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer;">5</button>
             </div>
         </div>
     `;
-
-    updateStarPickerUI(5);
 
     document.getElementById('teacher-reviews-list').innerHTML = '<p style="color: var(--hint-color); text-align: center;">Загрузка отзывов...</p>';
     teacherModal.classList.remove('hidden');
@@ -530,26 +526,21 @@ async function openTeacherModal(index) {
     await renderTeacherReviews(index);
 }
 
-// Обработка клика по звездам в модалке
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('star-btn')) {
         selectedRatingValue = parseInt(e.target.dataset.value);
-        updateStarPickerUI(selectedRatingValue);
+        document.querySelectorAll('.star-btn').forEach(btn => {
+            const val = parseInt(btn.dataset.value);
+            if (val <= selectedRatingValue) {
+                btn.style.background = 'var(--accent-color)';
+                btn.style.color = '#fff';
+            } else {
+                btn.style.background = 'var(--bg-color)';
+                btn.style.color = 'var(--text-color)';
+            }
+        });
     }
 });
-
-function updateStarPickerUI(rating) {
-    document.querySelectorAll('.star-btn').forEach(star => {
-        const val = parseInt(star.dataset.value);
-        if (val <= rating) {
-            star.style.opacity = "1";
-            star.textContent = "★";
-        } else {
-            star.style.opacity = "0.3";
-            star.textContent = "★";
-        }
-    });
-}
 
 async function renderTeacherReviews(teacherId) {
     const list = document.getElementById('teacher-reviews-list');
@@ -571,8 +562,8 @@ async function renderTeacherReviews(teacherId) {
     } else {
         approvedReviews.forEach(r => {
             const canDelete = isAdmin || (currentUserId && r.authorId == currentUserId);
-            const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 14px; cursor: pointer;">[x]</button>` : '';
-            const ratingBadge = r.rating ? `[${r.rating}/5]` : '';
+            const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 12px; cursor: pointer; color: var(--hint-color);">[Удалить]</button>` : '';
+            const ratingBadge = r.rating ? `[Оценка: ${r.rating}/5]` : '';
 
             list.innerHTML += `
                 <div class="review-item" style="padding-top: 8px;">
@@ -622,7 +613,6 @@ if(submitReviewBtn) {
         submitReviewBtn.disabled = true;
         submitReviewBtn.textContent = "Отправка...";
 
-        // Данные летят в Google Таблицу (поля: id, teacherId, text, rating, author, authorId, status)
         const newReview = {
             id: Date.now().toString(),
             teacherId: currentTeacherId.toString(),
