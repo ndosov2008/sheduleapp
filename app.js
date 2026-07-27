@@ -470,7 +470,7 @@ async function fetchGoogleSheet(action, payload = {}) {
         }
     } catch (error) {
         console.error("Ошибка Supabase:", error);
-        // ВОТ ТУТ МЫ ПЕРЕДАЕМ ОШИБКУ НАРУЖУ
+        // Выводим ошибку наружу для дебага в WebApp
         return { success: false, errorMsg: error.message || JSON.stringify(error) };
     }
 }
@@ -671,15 +671,15 @@ if(submitReviewBtn) {
         submitReviewBtn.disabled = true;
         submitReviewBtn.textContent = "Отправка...";
 
+        // Формируем объект без передачи id (база сгенерирует сама)
         const newReview = {
-    id: Date.now().toString(),
-    teacherid: currentTeacherId.toString(), // Исправлено на teacherid
-    text: text,
-    rating: rating,
-    author: authorName,
-    authorid: authorId ? authorId.toString() : "", // Исправлено на authorid
-    status: 'pending' 
-};
+            teacherid: currentTeacherId.toString(),
+            text: text,
+            rating: rating,
+            author: authorName,
+            authorid: authorId ? authorId.toString() : "",
+            status: 'pending' 
+        };
 
         const res = await fetchGoogleSheet('addReview', newReview);
 
@@ -687,7 +687,8 @@ if(submitReviewBtn) {
             textInput.value = '';
             tg.showAlert("Отзыв и оценка отправлены на модерацию!");
         } else {
-            tg.showAlert("Ошибка отправки. Попробуйте позже.");
+            // Выводим точную ошибку из базы на экран Telegram
+            tg.showAlert("Ошибка БД: " + (res?.errorMsg || "Неизвестная ошибка"));
         }
 
         submitReviewBtn.disabled = false;
