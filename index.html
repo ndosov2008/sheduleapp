@@ -3,20 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Расписание БГТУ</title>
+    <title>Student Hub БГТУ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
     <script src="app.js" defer></script>
 </head>
 <body>
-    <!-- ЭКРАН 1: Выбор курса и группы -->
-    <div id="selection-screen" class="screen active">
+    <!-- ГЛАВНОЕ МЕНЮ -->
+    <div id="main-menu-screen" class="screen active">
         <header class="main-header">
             <div class="header-top">
-                <h1>БГТУ</h1>
+                <h1>БГТУ Hub</h1>
                 <button id="open-settings-btn" class="icon-btn-top">⚙️</button>
             </div>
-            <p class="subtitle">Факультет ИТ</p>
+            <p class="subtitle">Факультет ИТ — Студенческий портал</p>
+        </header>
+
+        <div class="menu-buttons-column">
+            <button class="menu-btn" data-target="schedule-flow">📅 Расписание</button>
+            <button class="menu-btn" data-target="labs-screen">💻 Лабораторные</button>
+            <button class="menu-btn" data-target="session-screen">🎯 Сессия и Оценки</button>
+            <button class="menu-btn" data-target="teachers-screen">👨‍🏫 Преподаватели</button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 1: Выбор курса и группы -->
+    <div id="selection-screen" class="screen hidden">
+        <header class="schedule-header">
+            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <h2>Выбор группы</h2>
         </header>
 
         <div class="selection-block">
@@ -31,12 +46,10 @@
 
         <div class="selection-block hidden" id="group-block">
             <h2>Выберите группу</h2>
-            <div class="grid-buttons" id="group-grid">
-                <!-- Группы генерируются через JS -->
-            </div>
+            <div class="grid-buttons" id="group-grid"></div>
         </div>
 
-        <button id="submit-btn" class="main-btn" disabled>Показать расписание</button>
+        <button id="submit-btn" class="main-btn" disabled>Продолжить</button>
     </div>
 
     <!-- ЭКРАН НАСТРОЕК -->
@@ -61,8 +74,15 @@
         </div>
 
         <div class="settings-block">
-            <h3>Быстрый запуск (Группа по умолчанию)</h3>
-            <p class="settings-hint">Выберите группу, которая будет открываться сразу при входе:</p>
+            <h3>Свой фон (картинка)</h3>
+            <p class="settings-hint">Загрузите картинку с телефона (она перекроет фон темы):</p>
+            <input type="file" id="bg-file-input" accept="image/*" style="margin-top: 10px; width: 100%;">
+            <button id="remove-bg-btn" class="secondary-btn" style="margin-top: 10px;">Удалить свой фон</button>
+        </div>
+
+        <div class="settings-block">
+            <h3>Быстрый запуск</h3>
+            <p class="settings-hint">Сохраните группу по умолчанию:</p>
             <div class="default-group-selects">
                 <select id="default-course-select">
                     <option value="">-- Курс --</option>
@@ -84,19 +104,18 @@
                 </select>
             </div>
             <button id="save-settings-btn" class="main-btn" style="margin-top: 15px;">Сохранить и применить</button>
-            <button id="reset-settings-btn" class="secondary-btn">Сбросить быстрый запуск</button>
+            <button id="reset-settings-btn" class="secondary-btn">Сбросить</button>
         </div>
     </div>
 
     <!-- ЭКРАН 2: Само расписание -->
     <div id="schedule-screen" class="screen hidden">
         <header class="schedule-header">
-            <button id="back-btn" class="icon-btn">⬅ Назад</button>
+            <button class="back-to-menu icon-btn">⬅ Меню</button>
             <h2 id="current-selection-title">Загрузка...</h2>
             <button id="schedule-settings-btn" class="icon-btn-top" style="margin-left: auto;">⚙️</button>
         </header>
         
-        <!-- Выбор дня недели -->
         <div class="days-tabs" id="days-tabs">
             <button class="day-tab" data-day="1">ПН</button>
             <button class="day-tab" data-day="2">ВТ</button>
@@ -105,10 +124,77 @@
             <button class="day-tab" data-day="5">ПТ</button>
             <button class="day-tab" data-day="6">СБ</button>
         </div>
+        <main id="schedule-container"></main>
+    </div>
 
-        <main id="schedule-container">
-            <!-- Карточки расписания -->
+    <!-- ЭКРАН: Лабораторные -->
+    <div id="labs-screen" class="screen hidden">
+        <header class="schedule-header">
+            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <h2>Лабораторные работы</h2>
+        </header>
+        <main id="labs-container">
+            <p style="text-align: center; color: var(--hint-color); margin-top: 20px;">Раздел лаб в разработке 🚀</p>
         </main>
+    </div>
+
+    <!-- ЭКРАН: Сессия и Оценки -->
+    <div id="session-screen" class="screen hidden">
+        <header class="schedule-header">
+            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <h2 id="session-title">Сессия и Оценки</h2>
+        </header>
+        
+        <div id="session-content">
+            <div class="gpa-card">
+                <div class="gpa-title">Средний балл (GPA)</div>
+                <div class="gpa-value" id="gpa-score">0.00</div>
+                <div style="font-size: 11px; margin-top: 4px; opacity: 0.8;">(Зачеты не идут в расчет)</div>
+            </div>
+            <main id="session-container"></main>
+        </div>
+    </div>
+
+    <!-- ЭКРАН: Преподаватели -->
+    <div id="teachers-screen" class="screen hidden">
+        <header class="schedule-header">
+            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <h2>Преподаватели БГТУ</h2>
+            <button id="admin-panel-btn" class="icon-btn-top hidden" style="margin-left: auto; border-color: red; color: red;">🛡️</button>
+        </header>
+        <main id="teachers-container"></main>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО: ПРОФИЛЬ ПРЕПОДА И ОТЗЫВЫ -->
+    <div id="teacher-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button class="close-modal-btn">✖</button>
+            <div id="teacher-modal-header" style="display: flex; align-items: center; gap: 14px; margin-bottom: 15px;">
+            </div>
+            <div id="teacher-modal-info" class="details" style="margin-bottom: 20px;">
+            </div>
+            
+            <h3 style="font-size: 16px; margin-bottom: 10px;">Отзывы студентов</h3>
+            <div id="teacher-reviews-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px;">
+            </div>
+
+            <div class="review-form">
+                <textarea id="review-text" placeholder="Напишите свой отзыв..." style="width: 100%; height: 60px; background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 10px; resize: none;"></textarea>
+                <button id="submit-review-btn" class="main-btn" style="margin-top: 0; padding: 10px;">Отправить на модерацию</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО: АДМИНКА -->
+    <div id="admin-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button class="close-admin-btn" style="float: right; background: none; border: none; color: var(--text-color); font-size: 20px;">✖</button>
+            <h2 style="margin-bottom: 15px; color: var(--accent-color);">Админ-панель</h2>
+            <p style="font-size: 13px; color: var(--hint-color); margin-bottom: 15px;">Ожидают модерации:</p>
+            
+            <div id="admin-reviews-list" style="max-height: 300px; overflow-y: auto;">
+            </div>
+        </div>
     </div>
 </body>
 </html>
