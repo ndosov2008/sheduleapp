@@ -5,7 +5,6 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* Стандартные темы */
 body.theme-dark {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
@@ -42,7 +41,6 @@ body.theme-purple {
     --border-color: #3b3160;
 }
 
-/* Темы с твоими 4 картинками */
 body.theme-pic1 {
     --bg-color: #0f0a1a;
     --card-bg: rgba(30, 20, 50, 0.85);
@@ -95,11 +93,19 @@ body.theme-pic4 {
     background-attachment: fixed;
 }
 
+body.has-custom-bg {
+    background-image: var(--bg-image) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
     padding: 16px;
     transition: background-color 0.3s ease;
+    min-height: 100vh;
 }
 
 .hidden {
@@ -142,12 +148,41 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--text-color);
 }
 
 .subtitle {
     font-size: 14px;
     color: var(--hint-color);
     margin-top: 4px;
+}
+
+.menu-buttons-column {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.menu-btn {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    backdrop-filter: blur(10px);
+}
+
+.menu-btn:active {
+    transform: scale(0.98);
+    background-color: var(--accent-color);
+    color: #fff;
 }
 
 .selection-block {
@@ -175,6 +210,7 @@ body {
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
 }
 
 .choice-btn.selected {
@@ -231,13 +267,13 @@ body {
     cursor: pointer;
 }
 
-/* Экран настроек */
 .settings-block {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 16px;
     margin-bottom: 16px;
+    backdrop-filter: blur(10px);
 }
 
 .settings-block h3 {
@@ -289,7 +325,6 @@ body {
     font-size: 14px;
 }
 
-/* Стили для экрана расписания */
 .schedule-header {
     display: flex;
     align-items: center;
@@ -312,6 +347,7 @@ body {
     border-radius: 16px;
     padding: 16px;
     margin-bottom: 12px;
+    backdrop-filter: blur(10px);
 }
 
 .subject-title {
@@ -364,10 +400,111 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    backdrop-filter: blur(10px);
 }
 
 .day-tab.active {
     background-color: var(--accent-color);
     color: #ffffff;
+    border-color: var(--accent-color);
+}
+
+.gpa-card {
+    background: linear-gradient(135deg, var(--accent-color), #2563eb);
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.gpa-title {
+    font-size: 14px;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.gpa-value {
+    font-size: 36px;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+/* МОДАЛЬНЫЕ ОКНА */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.review-item {
+    background-color: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    border: 1px solid var(--border-color);
+}
+
+.admin-action-btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+.admin-action-btns button {
+    flex: 1;
+    padding: 6px;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-approve { background-color: #22c55e; color: white; }
+.btn-reject { background-color: #ef4444; color: white; }
+
+.teacher-card-clickable {
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.teacher-card-clickable:active {
+    transform: scale(0.98);
     border-color: var(--accent-color);
 }
