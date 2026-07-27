@@ -14,23 +14,23 @@
         <header class="main-header">
             <div class="header-top">
                 <h1>БГТУ Hub</h1>
-                <button id="open-settings-btn" class="icon-btn-top">⚙️</button>
+                <button id="open-settings-btn" class="icon-btn-top">Настройки</button>
             </div>
-            <p class="subtitle">Факультет ИТ — Студенческий портал</p>
+            <p class="subtitle">Факультет ИТ - Студенческий портал</p>
         </header>
 
         <div class="menu-buttons-column">
-            <button class="menu-btn" data-target="schedule-flow">📅 Расписание</button>
-            <button class="menu-btn" data-target="labs-screen">💻 Лабораторные</button>
-            <button class="menu-btn" data-target="session-screen">🎯 Сессия и Оценки</button>
-            <button class="menu-btn" data-target="teachers-screen">👨‍🏫 Преподаватели</button>
+            <button class="menu-btn" data-target="schedule-flow">Расписание</button>
+            <button class="menu-btn" data-target="labs-screen">Лабораторные</button>
+            <button class="menu-btn" data-target="session-screen">Сессия и Оценки</button>
+            <button class="menu-btn" data-target="teachers-screen">Преподаватели</button>
         </div>
     </div>
 
     <!-- ЭКРАН 1: Выбор курса и группы -->
     <div id="selection-screen" class="screen hidden">
         <header class="schedule-header">
-            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <button class="back-to-menu icon-btn">Меню</button>
             <h2>Выбор группы</h2>
         </header>
 
@@ -55,21 +55,21 @@
     <!-- ЭКРАН НАСТРОЕК -->
     <div id="settings-screen" class="screen hidden">
         <header class="schedule-header">
-            <button id="close-settings-btn" class="icon-btn">⬅ Назад</button>
+            <button id="close-settings-btn" class="icon-btn">Назад</button>
             <h2>Настройки</h2>
         </header>
 
         <div class="settings-block">
             <h3>Цветовая тема</h3>
             <div class="theme-grid">
-                <button class="theme-btn" data-theme="dark">Классика (Тёмная)</button>
+                <button class="theme-btn" data-theme="dark">Классика (Темная)</button>
                 <button class="theme-btn" data-theme="pink">Нежная (Розовый)</button>
                 <button class="theme-btn" data-theme="blue">Строгая (Синяя)</button>
                 <button class="theme-btn" data-theme="purple">Космос (Фиолет)</button>
-                <button class="theme-btn" data-theme="pic1">⚡ Неон</button>
-                <button class="theme-btn" data-theme="pic2">🌸 Пастель</button>
-                <button class="theme-btn" data-theme="pic3">🌙 Ночной вайб</button>
-                <button class="theme-btn" data-theme="pic4">💜 Пурпурный стил</button>
+                <button class="theme-btn" data-theme="pic1">Неон</button>
+                <button class="theme-btn" data-theme="pic2">Пастель</button>
+                <button class="theme-btn" data-theme="pic3">Ночной вайб</button>
+                <button class="theme-btn" data-theme="pic4">Пурпурный стиль</button>
             </div>
         </div>
 
@@ -111,9 +111,9 @@
     <!-- ЭКРАН 2: Само расписание -->
     <div id="schedule-screen" class="screen hidden">
         <header class="schedule-header">
-            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <button class="back-to-menu icon-btn">Меню</button>
             <h2 id="current-selection-title">Загрузка...</h2>
-            <button id="schedule-settings-btn" class="icon-btn-top" style="margin-left: auto;">⚙️</button>
+            <button id="schedule-settings-btn" class="icon-btn-top" style="margin-left: auto;">Настройки</button>
         </header>
         
         <div class="days-tabs" id="days-tabs">
@@ -130,18 +130,18 @@
     <!-- ЭКРАН: Лабораторные -->
     <div id="labs-screen" class="screen hidden">
         <header class="schedule-header">
-            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <button class="back-to-menu icon-btn">Меню</button>
             <h2>Лабораторные работы</h2>
         </header>
         <main id="labs-container">
-            <p style="text-align: center; color: var(--hint-color); margin-top: 20px;">Раздел лаб в разработке 🚀</p>
+            <p style="text-align: center; color: var(--hint-color); margin-top: 20px;">Раздел лаб в разработке</p>
         </main>
     </div>
 
     <!-- ЭКРАН: Сессия и Оценки -->
     <div id="session-screen" class="screen hidden">
         <header class="schedule-header">
-            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <button class="back-to-menu icon-btn">Меню</button>
             <h2 id="session-title">Сессия и Оценки</h2>
         </header>
         
@@ -158,9 +158,9 @@
     <!-- ЭКРАН: Преподаватели -->
     <div id="teachers-screen" class="screen hidden">
         <header class="schedule-header">
-            <button class="back-to-menu icon-btn">⬅ Меню</button>
+            <button class="back-to-menu icon-btn">Меню</button>
             <h2>Преподаватели БГТУ</h2>
-            <button id="admin-panel-btn" class="icon-btn-top hidden" style="margin-left: auto; border-color: red; color: red;">🛡️</button>
+            <button id="admin-panel-btn" class="icon-btn-top hidden" style="margin-left: auto; border-color: red; color: red;">Админ</button>
         </header>
         <main id="teachers-container"></main>
     </div>
@@ -168,7 +168,7 @@
     <!-- МОДАЛЬНОЕ ОКНО: ПРОФИЛЬ ПРЕПОДА И ОТЗЫВЫ -->
     <div id="teacher-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <button class="close-modal-btn">✖</button>
+            <button class="close-modal-btn">Закрыть</button>
             <div id="teacher-modal-header" style="display: flex; align-items: center; gap: 14px; margin-bottom: 15px;">
             </div>
             <div id="teacher-modal-info" class="details" style="margin-bottom: 20px;">
@@ -188,7 +188,7 @@
     <!-- МОДАЛЬНОЕ ОКНО: АДМИНКА -->
     <div id="admin-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <button class="close-admin-btn" style="float: right; background: none; border: none; color: var(--text-color); font-size: 20px;">✖</button>
+            <button class="close-admin-btn" style="float: right; background: none; border: none; color: var(--text-color); font-size: 20px;">Закрыть</button>
             <h2 style="margin-bottom: 15px; color: var(--accent-color);">Админ-панель</h2>
             <p style="font-size: 13px; color: var(--hint-color); margin-bottom: 15px;">Ожидают модерации:</p>
             
