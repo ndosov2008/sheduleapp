@@ -2,6 +2,13 @@ const tg = window.Telegram.WebApp;
 tg.expand();
 tg.ready();
 
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const SUPABASE_URL = 'https://gqnzzwnfduckovlxtnzm.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Zx3zDKyvL2E-Bc9KnVoXeg_q9xeVNz-';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbwQsWj07JbHMyUPrt_Ft0vkZw9UnyRRg-JRMXM0qSyj5GtvsA6838Gy-VB3xj1zw58G6A/exec";
 const ADMIN_TG_ID = 5555823645;
 let currentTeacherId = null;
