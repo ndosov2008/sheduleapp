@@ -6,6 +6,7 @@ tg.ready();
 const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbyHnShrdO0c5QJ268oHqhgRAG5hWR9S39cUnIeVQHIFGMf66Ro0m3u_r6Yy46p3SXfpJg/exec";
 const ADMIN_TG_ID = 5555823645;
 let currentTeacherId = null;
+let selectedRatingValue = 5; // По умолчанию 5 звезд
 
 let state = {
     course: null,
@@ -468,6 +469,7 @@ async function renderTeachers() {
         card.className = 'schedule-card teacher-card-clickable';
         card.dataset.id = index; 
         
+        // Считаем средний балл по одобренным отзывам
         const teacherReviews = allReviews.filter(r => r.teacherId == index && r.status === 'approved');
         const ratings = teacherReviews.filter(r => r.rating).map(r => Number(r.rating));
         const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—";
@@ -496,6 +498,7 @@ async function renderTeachers() {
 const teacherModal = document.getElementById('teacher-modal');
 async function openTeacherModal(index) {
     currentTeacherId = index;
+    selectedRatingValue = 5; // Сброс по умолчанию на 5 звезд
     const t = teachersData[index];
     const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888888'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
     const photoSrc = t.photo ? t.photo : defaultAvatar;
@@ -505,23 +508,47 @@ async function openTeacherModal(index) {
         <h2 style="font-size: 18px;">${t.name}</h2>
     `;
     
+    // Рендерим интерактивные 5 звезд для выбора оценки
     document.getElementById('teacher-modal-info').innerHTML = `
-        <div style="margin-bottom: 10px;">
-            <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 5px;">Оценка:</label>
-            <select id="review-rating" style="width: 100%; background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 8px; border-radius: 8px;">
-                <option value="5">5 - Отлично</option>
-                <option value="4">4 - Хорошо</option>
-                <option value="3">3 - Нормально</option>
-                <option value="2">2 - Плохо</option>
-                <option value="1">1 - Ужасно</option>
-            </select>
+        <div style="margin-bottom: 15px; text-align: center;">
+            <label style="font-size: 13px; color: var(--hint-color); display: block; margin-bottom: 8px;">Ваша оценка:</label>
+            <div id="star-rating-picker" style="display: flex; justify-content: center; gap: 8px; cursor: pointer;">
+                <span class="star-btn" data-value="1" style="font-size: 24px; color: var(--accent-color);">★</span>
+                <span class="star-btn" data-value="2" style="font-size: 24px; color: var(--accent-color);">★</span>
+                <span class="star-btn" data-value="3" style="font-size: 24px; color: var(--accent-color);">★</span>
+                <span class="star-btn" data-value="4" style="font-size: 24px; color: var(--accent-color);">★</span>
+                <span class="star-btn" data-value="5" style="font-size: 24px; color: var(--accent-color);">★</span>
+            </div>
         </div>
     `;
+
+    updateStarPickerUI(5);
 
     document.getElementById('teacher-reviews-list').innerHTML = '<p style="color: var(--hint-color); text-align: center;">Загрузка отзывов...</p>';
     teacherModal.classList.remove('hidden');
 
     await renderTeacherReviews(index);
+}
+
+// Обработка клика по звездам в модалке
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('star-btn')) {
+        selectedRatingValue = parseInt(e.target.dataset.value);
+        updateStarPickerUI(selectedRatingValue);
+    }
+});
+
+function updateStarPickerUI(rating) {
+    document.querySelectorAll('.star-btn').forEach(star => {
+        const val = parseInt(star.dataset.value);
+        if (val <= rating) {
+            star.style.opacity = "1";
+            star.textContent = "★";
+        } else {
+            star.style.opacity = "0.3";
+            star.textContent = "★";
+        }
+    });
 }
 
 async function renderTeacherReviews(teacherId) {
@@ -545,7 +572,7 @@ async function renderTeacherReviews(teacherId) {
         approvedReviews.forEach(r => {
             const canDelete = isAdmin || (currentUserId && r.authorId == currentUserId);
             const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 14px; cursor: pointer;">[x]</button>` : '';
-            const ratingBadge = r.rating ? `[${r.rating}]` : '';
+            const ratingBadge = r.rating ? `[${r.rating}/5]` : '';
 
             list.innerHTML += `
                 <div class="review-item" style="padding-top: 8px;">
@@ -575,9 +602,8 @@ const submitReviewBtn = document.getElementById('submit-review-btn');
 if(submitReviewBtn) {
     submitReviewBtn.addEventListener('click', async () => {
         const textInput = document.getElementById('review-text');
-        const ratingInput = document.getElementById('review-rating');
         const text = textInput.value.trim();
-        const rating = ratingInput ? ratingInput.value : "5";
+        const rating = selectedRatingValue.toString();
         
         if (text.length < 3) {
             tg.showAlert("Текст отзыва слишком короткий!");
@@ -596,6 +622,7 @@ if(submitReviewBtn) {
         submitReviewBtn.disabled = true;
         submitReviewBtn.textContent = "Отправка...";
 
+        // Данные летят в Google Таблицу (поля: id, teacherId, text, rating, author, authorId, status)
         const newReview = {
             id: Date.now().toString(),
             teacherId: currentTeacherId.toString(),
@@ -668,7 +695,7 @@ async function renderAdminReviews() {
             item.className = 'review-item';
             item.innerHTML = `
                 <div style="color: var(--accent-color); font-size: 12px; margin-bottom: 4px;">
-                    Кому: ${tName} ${r.rating ? `(Оценка: ${r.rating})` : ''}<br>
+                    Кому: ${tName} ${r.rating ? `(Оценка: ${r.rating}/5)` : ''}<br>
                     От: ${r.author || 'Студент'}
                 </div>
                 <div>${r.text}</div>
