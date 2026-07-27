@@ -441,7 +441,9 @@ async function fetchGoogleSheet(action, payload = {}) {
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
         });
-        return await response.json();
+        const resJson = await response.json();
+        console.log(`API Action [${action}]:`, resJson);
+        return resJson;
     } catch (error) {
         console.error("Ошибка при работе с БД:", error);
         return null;
@@ -465,9 +467,9 @@ async function renderTeachers() {
         card.className = 'schedule-card teacher-card-clickable';
         card.dataset.id = index; 
         
-        // Надежное сопоставление через строки, чтобы исключить баги с типами данных
+        // Надежное сравнение строковых ID и статусов в нижнем регистре
         const teacherReviews = allReviews.filter(r => String(r.teacherId) === String(index) && String(r.status).trim().toLowerCase() === 'approved');
-        const ratings = teacherReviews.filter(r => r.rating).map(r => Number(r.rating));
+        const ratings = teacherReviews.filter(r => r.rating !== undefined && r.rating !== "").map(r => Number(r.rating));
         const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—";
 
         const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888888'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
