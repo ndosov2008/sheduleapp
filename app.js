@@ -2,6 +2,11 @@ const tg = window.Telegram.WebApp;
 tg.expand();
 tg.ready();
 
+// Твоя ссылка на Google Apps Script
+const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbzxreBhW-hH-C-a9Zd9dkkAnNqaID5xFHtlknUSJwkircVyMQo0nG6RIB9p6S6IuZBB/exec";
+const ADMIN_TG_ID = 5555823645;
+let currentTeacherId = null;
+
 let state = {
     course: null,
     group: null,
@@ -99,26 +104,30 @@ document.addEventListener('click', (e) => {
 const bgFileInput = document.getElementById('bg-file-input');
 const removeBgBtn = document.getElementById('remove-bg-btn');
 
-bgFileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const base64Image = e.target.result;
-            document.documentElement.style.setProperty('--bg-image', `url(${base64Image})`);
-            localStorage.setItem('app_custom_bg', base64Image);
-            document.body.classList.add('has-custom-bg');
-        };
-        reader.readAsDataURL(file);
-    }
-});
+if(bgFileInput) {
+    bgFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Image = e.target.result;
+                document.documentElement.style.setProperty('--bg-image', `url(${base64Image})`);
+                localStorage.setItem('app_custom_bg', base64Image);
+                document.body.classList.add('has-custom-bg');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
 
-removeBgBtn.addEventListener('click', () => {
-    document.documentElement.style.removeProperty('--bg-image');
-    localStorage.removeItem('app_custom_bg');
-    bgFileInput.value = '';
-    document.body.classList.remove('has-custom-bg');
-});
+if(removeBgBtn) {
+    removeBgBtn.addEventListener('click', () => {
+        document.documentElement.style.removeProperty('--bg-image');
+        localStorage.removeItem('app_custom_bg');
+        bgFileInput.value = '';
+        document.body.classList.remove('has-custom-bg');
+    });
+}
 
 // --- УПРАВЛЕНИЕ ЭКРАНАМИ И МЕНЮ ---
 function showScreen(screenId) {
@@ -206,15 +215,17 @@ function renderGroups() {
     });
 }
 
-submitBtn.addEventListener('click', () => {
-    if (state.targetFlow === 'session-screen') {
-        showSessionScreen();
-    } else if (state.targetFlow === 'labs-screen') {
-        showScreen('labs-screen');
-    } else {
-        showScheduleScreen();
-    }
-});
+if(submitBtn) {
+    submitBtn.addEventListener('click', () => {
+        if (state.targetFlow === 'session-screen') {
+            showSessionScreen();
+        } else if (state.targetFlow === 'labs-screen') {
+            showScreen('labs-screen');
+        } else {
+            showScheduleScreen();
+        }
+    });
+}
 
 // --- РАСПИСАНИЕ ---
 function showScheduleScreen() {
@@ -226,13 +237,15 @@ function showScheduleScreen() {
 }
 
 const daysTabs = document.getElementById('days-tabs');
-daysTabs.addEventListener('click', (e) => {
-    if (e.target.classList.contains('day-tab')) {
-        state.day = e.target.dataset.day;
-        updateActiveTab();
-        renderSchedule();
-    }
-});
+if(daysTabs) {
+    daysTabs.addEventListener('click', (e) => {
+        if (e.target.classList.contains('day-tab')) {
+            state.day = e.target.dataset.day;
+            updateActiveTab();
+            renderSchedule();
+        }
+    });
+}
 
 function updateActiveTab() {
     document.querySelectorAll('.day-tab').forEach(tab => {
@@ -360,7 +373,8 @@ function calculateGPA() {
         }
     });
     const gpa = count > 0 ? (sum / count).toFixed(2) : "0.00";
-    document.getElementById('gpa-score').textContent = gpa;
+    const gpaScoreEl = document.getElementById('gpa-score');
+    if(gpaScoreEl) gpaScoreEl.textContent = gpa;
 }
 
 // --- НАСТРОЙКИ ---
@@ -368,11 +382,13 @@ const openSettingsBtn = document.getElementById('open-settings-btn');
 const scheduleSettingsBtn = document.getElementById('schedule-settings-btn');
 const closeSettingsBtn = document.getElementById('close-settings-btn');
 
-openSettingsBtn.addEventListener('click', () => {
-    showScreen('settings-screen');
-    document.getElementById('default-course-select').value = localStorage.getItem('default_course') || '';
-    document.getElementById('default-group-select').value = localStorage.getItem('default_group') || '';
-});
+if(openSettingsBtn) {
+    openSettingsBtn.addEventListener('click', () => {
+        showScreen('settings-screen');
+        document.getElementById('default-course-select').value = localStorage.getItem('default_course') || '';
+        document.getElementById('default-group-select').value = localStorage.getItem('default_group') || '';
+    });
+}
 
 if (scheduleSettingsBtn) {
     scheduleSettingsBtn.addEventListener('click', () => {
@@ -382,44 +398,57 @@ if (scheduleSettingsBtn) {
     });
 }
 
-closeSettingsBtn.addEventListener('click', () => showScreen(previousScreen));
+if(closeSettingsBtn) {
+    closeSettingsBtn.addEventListener('click', () => showScreen(previousScreen));
+}
 
 const saveSettingsBtn = document.getElementById('save-settings-btn');
 const resetSettingsBtn = document.getElementById('reset-settings-btn');
 const defaultCourseSelect = document.getElementById('default-course-select');
 const defaultGroupSelect = document.getElementById('default-group-select');
 
-saveSettingsBtn.addEventListener('click', () => {
-    const c = defaultCourseSelect.value;
-    const g = defaultGroupSelect.value;
-    if (c && g) {
-        localStorage.setItem('default_course', c);
-        localStorage.setItem('default_group', g);
-        alert('Настройки сохранены! При следующем входе группа загрузится автоматически.');
-    } else {
-        alert('Выберите курс и группу.');
-    }
-});
-
-resetSettingsBtn.addEventListener('click', () => {
-    localStorage.removeItem('default_course');
-    localStorage.removeItem('default_group');
-    defaultCourseSelect.value = '';
-    defaultGroupSelect.value = '';
-    alert('Автозапуск сброшен.');
-});
-
-
-// --- ЛОГИКА ОТЗЫВОВ И АДМИНКИ ---
-const ADMIN_TG_ID = 5555823645;
-let currentTeacherId = null;
-
-function getReviews() {
-    return JSON.parse(localStorage.getItem('app_reviews') || '[]');
+if(saveSettingsBtn) {
+    saveSettingsBtn.addEventListener('click', () => {
+        const c = defaultCourseSelect.value;
+        const g = defaultGroupSelect.value;
+        if (c && g) {
+            localStorage.setItem('default_course', c);
+            localStorage.setItem('default_group', g);
+            tg.showAlert('Настройки сохранены! При следующем входе группа загрузится автоматически.');
+        } else {
+            tg.showAlert('Выберите курс и группу.');
+        }
+    });
 }
 
-function saveReviews(reviews) {
-    localStorage.setItem('app_reviews', JSON.stringify(reviews));
+if(resetSettingsBtn) {
+    resetSettingsBtn.addEventListener('click', () => {
+        localStorage.removeItem('default_course');
+        localStorage.removeItem('default_group');
+        defaultCourseSelect.value = '';
+        defaultGroupSelect.value = '';
+        tg.showAlert('Автозапуск сброшен.');
+    });
+}
+
+
+// --- ЛОГИКА ОТЗЫВОВ И АДМИНКИ (GOOGLE SHEETS) ---
+
+// Функция для общения с Google Таблицей
+async function fetchGoogleSheet(action, payload = {}) {
+    payload.action = action;
+    try {
+        const response = await fetch(GOOGLE_APP_URL, {
+            method: 'POST',
+            // Используем text/plain, чтобы браузер не блокировал запрос (CORS)
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Ошибка при работе с БД:", error);
+        return null;
+    }
 }
 
 function renderTeachers() {
@@ -458,7 +487,7 @@ function renderTeachers() {
 }
 
 const teacherModal = document.getElementById('teacher-modal');
-function openTeacherModal(index) {
+async function openTeacherModal(index) {
     currentTeacherId = index;
     const t = teachersData[index];
     const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888888'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
@@ -472,16 +501,24 @@ function openTeacherModal(index) {
         <p>💬 ${t.info}</p>
     `;
 
-    renderTeacherReviews(index);
+    document.getElementById('teacher-reviews-list').innerHTML = '<p style="color: var(--hint-color); text-align: center;">Загрузка отзывов из базы...</p>';
     teacherModal.classList.remove('hidden');
+
+    await renderTeacherReviews(index);
 }
 
-function renderTeacherReviews(teacherId) {
+async function renderTeacherReviews(teacherId) {
     const list = document.getElementById('teacher-reviews-list');
-    const allReviews = getReviews();
-    const approvedReviews = allReviews.filter(r => r.teacherId === teacherId && r.status === 'approved');
+    
+    // Запрашиваем все отзывы из Google Таблицы
+    const allReviews = await fetchGoogleSheet('getReviews');
+    
+    if (!allReviews) {
+        list.innerHTML = '<p style="color: red; font-size: 13px; text-align: center;">Ошибка сети.</p>';
+        return;
+    }
 
-    // Проверяем, админ ли сейчас зашел, или сам автор отзыва
+    const approvedReviews = allReviews.filter(r => r.teacherId == teacherId && r.status === 'approved');
     const currentUserId = tg.initDataUnsafe?.user?.id;
     const isAdmin = (currentUserId === ADMIN_TG_ID || localStorage.getItem('force_admin') === 'true');
 
@@ -490,8 +527,7 @@ function renderTeacherReviews(teacherId) {
         list.innerHTML = '<p style="color: var(--hint-color); font-size: 13px; text-align: center;">Пока нет отзывов.</p>';
     } else {
         approvedReviews.forEach(r => {
-            // Разрешаем удалить отзыв, если это админ ИЛИ если пользователь — автор этого отзыва
-            const canDelete = isAdmin || (currentUserId && r.authorId === currentUserId);
+            const canDelete = isAdmin || (currentUserId && r.authorId == currentUserId);
             const deleteBtnHtml = canDelete ? `<button class="delete-review-btn" data-id="${r.id}" style="float: right; background: none; border: none; font-size: 14px; cursor: pointer;">🗑️</button>` : '';
 
             list.innerHTML += `
@@ -506,79 +542,101 @@ function renderTeacherReviews(teacherId) {
     }
 }
 
-// Обработка клика по иконке корзины для УДАЛЕНИЯ уже опубликованного отзыва
-document.getElementById('teacher-reviews-list').addEventListener('click', (e) => {
+document.getElementById('teacher-reviews-list').addEventListener('click', async (e) => {
     const btn = e.target.closest('.delete-review-btn');
     if (btn) {
-        const id = parseInt(btn.dataset.id);
-        if (confirm("Вы уверены, что хотите безвозвратно удалить этот отзыв?")) {
-            let reviews = getReviews();
-            reviews = reviews.filter(r => r.id !== id);
-            saveReviews(reviews);
-            renderTeacherReviews(currentTeacherId); // Обновляем список сразу после удаления
+        const id = btn.dataset.id;
+        // Для WebApp лучше использовать встроенный confirm, но для простоты оставляем стандартный
+        if (confirm("Удалить этот отзыв навсегда?")) {
+            btn.textContent = "⌛";
+            await fetchGoogleSheet('deleteReview', { id: id });
+            await renderTeacherReviews(currentTeacherId);
         }
     }
 });
 
-// Отправка отзыва
-document.getElementById('submit-review-btn').addEventListener('click', () => {
-    const textInput = document.getElementById('review-text');
-    const text = textInput.value.trim();
-    
-    if (text.length < 5) {
-        tg.showAlert("Отзыв слишком короткий!");
-        return;
-    }
+const submitReviewBtn = document.getElementById('submit-review-btn');
+if(submitReviewBtn) {
+    submitReviewBtn.addEventListener('click', async () => {
+        const textInput = document.getElementById('review-text');
+        const text = textInput.value.trim();
+        
+        if (text.length < 5) {
+            tg.showAlert("Отзыв слишком короткий!");
+            return;
+        }
 
-    // Достаем имя пользователя из Telegram
-    const user = tg.initDataUnsafe?.user;
-    let authorName = "Анонимный Студент";
-    let authorId = null;
+        const user = tg.initDataUnsafe?.user;
+        let authorName = "Анонимный Студент";
+        let authorId = null;
 
-    if (user) {
-        // Если есть юзернейм (@ник), берем его. Если нет — берем просто Имя пользователя.
-        authorName = user.username ? `@${user.username}` : user.first_name;
-        authorId = user.id;
-    }
+        if (user) {
+            authorName = user.username ? `@${user.username}` : user.first_name;
+            authorId = user.id;
+        }
 
-    const newReview = {
-        id: Date.now(),
-        teacherId: currentTeacherId,
-        text: text,
-        author: authorName,   // Сохраняем имя
-        authorId: authorId,   // Сохраняем ID, чтобы юзер мог потом удалить свой отзыв
-        status: 'pending' 
-    };
+        submitReviewBtn.disabled = true;
+        submitReviewBtn.textContent = "Отправка...";
 
-    const reviews = getReviews();
-    reviews.push(newReview);
-    saveReviews(reviews);
+        const newReview = {
+            id: Date.now().toString(),
+            teacherId: currentTeacherId.toString(),
+            text: text,
+            author: authorName,
+            authorId: authorId ? authorId.toString() : "",
+            status: 'pending' 
+        };
 
-    textInput.value = '';
-    tg.showAlert("Отзыв отправлен на модерацию!");
-});
+        const res = await fetchGoogleSheet('addReview', newReview);
 
-document.querySelector('.close-modal-btn').addEventListener('click', () => {
-    teacherModal.classList.add('hidden');
-});
+        if (res && res.success) {
+            textInput.value = '';
+            tg.showAlert("Отзыв улетел на модерацию!");
+        } else {
+            tg.showAlert("Ошибка отправки. Попробуйте позже.");
+        }
 
+        submitReviewBtn.disabled = false;
+        submitReviewBtn.textContent = "Отправить на модерацию";
+    });
+}
+
+const closeModalBtn = document.querySelector('.close-modal-btn');
+if(closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
+        teacherModal.classList.add('hidden');
+    });
+}
+
+// --- АДМИН ПАНЕЛЬ ---
 const adminModal = document.getElementById('admin-modal');
 const adminPanelBtn = document.getElementById('admin-panel-btn');
 
 if(adminPanelBtn) {
-    adminPanelBtn.addEventListener('click', () => {
-        renderAdminReviews();
+    adminPanelBtn.addEventListener('click', async () => {
         adminModal.classList.remove('hidden');
+        await renderAdminReviews();
     });
 }
 
-document.querySelector('.close-admin-btn').addEventListener('click', () => {
-    adminModal.classList.add('hidden');
-});
+const closeAdminBtn = document.querySelector('.close-admin-btn');
+if(closeAdminBtn) {
+    closeAdminBtn.addEventListener('click', () => {
+        adminModal.classList.add('hidden');
+    });
+}
 
-function renderAdminReviews() {
+async function renderAdminReviews() {
     const list = document.getElementById('admin-reviews-list');
-    const allReviews = getReviews();
+    list.innerHTML = '<p style="color: var(--hint-color); text-align: center;">Загрузка отзывов...</p>';
+
+    const allReviews = await fetchGoogleSheet('getReviews');
+    
+    if (!allReviews) {
+        list.innerHTML = '<p style="color: red; text-align: center;">Ошибка доступа к таблице.</p>';
+        return;
+    }
+
     const pendingReviews = allReviews.filter(r => r.status === 'pending');
 
     list.innerHTML = '';
@@ -586,10 +644,9 @@ function renderAdminReviews() {
         list.innerHTML = '<p style="color: var(--hint-color); font-size: 13px; text-align: center;">Все чисто! Новых отзывов нет.</p>';
     } else {
         pendingReviews.forEach(r => {
-            const tName = teachersData[r.teacherId].name;
+            const tName = teachersData[r.teacherId]?.name || "Неизвестный препод";
             const item = document.createElement('div');
             item.className = 'review-item';
-            // В админке теперь тоже видно, кто написал отзыв
             item.innerHTML = `
                 <div style="color: var(--accent-color); font-size: 12px; margin-bottom: 4px;">
                     Кому: ${tName}<br>
@@ -606,20 +663,20 @@ function renderAdminReviews() {
     }
 }
 
-document.getElementById('admin-reviews-list').addEventListener('click', (e) => {
-    const id = parseInt(e.target.dataset.id);
-    if (!id) return;
+const adminReviewsList = document.getElementById('admin-reviews-list');
+if(adminReviewsList) {
+    adminReviewsList.addEventListener('click', async (e) => {
+        const id = e.target.dataset.id;
+        if (!id) return;
 
-    const reviews = getReviews();
-    const reviewIndex = reviews.findIndex(r => r.id === id);
-    
-    if (reviewIndex !== -1) {
         if (e.target.classList.contains('btn-approve')) {
-            reviews[reviewIndex].status = 'approved';
+            e.target.textContent = "⌛...";
+            await fetchGoogleSheet('updateStatus', { id: id, status: 'approved' });
+            await renderAdminReviews(); 
         } else if (e.target.classList.contains('btn-reject')) {
-            reviews.splice(reviewIndex, 1);
+            e.target.textContent = "⌛...";
+            await fetchGoogleSheet('deleteReview', { id: id });
+            await renderAdminReviews(); 
         }
-        saveReviews(reviews);
-        renderAdminReviews(); 
-    }
-});
+    });
+}
