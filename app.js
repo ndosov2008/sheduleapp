@@ -671,14 +671,14 @@ if(submitReviewBtn) {
         submitReviewBtn.textContent = "Отправка...";
 
         const newReview = {
-            id: Date.now().toString(),
-            teacherId: currentTeacherId.toString(),
-            text: text,
-            rating: rating,
-            author: authorName,
-            authorId: authorId ? authorId.toString() : "",
-            status: 'pending' 
-        };
+    id: Date.now().toString(),
+    teacherid: currentTeacherId.toString(), // Исправлено на teacherid
+    text: text,
+    rating: rating,
+    author: authorName,
+    authorid: authorId ? authorId.toString() : "", // Исправлено на authorid
+    status: 'pending' 
+};
 
         const res = await fetchGoogleSheet('addReview', newReview);
 
