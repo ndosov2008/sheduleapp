@@ -1,8 +1,8 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
 const tg = window.Telegram.WebApp;
 tg.expand();
 tg.ready();
-
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://gqnzzwnfduckovlxtnzm.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_Zx3zDKyvL2E-Bc9KnVoXeg_q9xeVNz-';
