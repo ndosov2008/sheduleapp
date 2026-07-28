@@ -45,18 +45,127 @@ const sessionExamsData = {
     }
 };
 
+// ПОЛНЫЙ СПИСОК ПРЕПОДАВАТЕЛЕЙ С КАФЕДРАМИ И ДОЛЖНОСТЯМИ
 const teachersData = [
-    { name: "Е.А. Блинова" },
-    { name: "Н.А. Жиляк" },
-    { name: "Е.В. Барковский" },
-    { name: "В.В. Смелов" },
-    { name: "Д.В. Шиман" },
-    { name: "Н.И. Белодед" },
-    { name: "Е.А. Гончар" },
-    { name: "А.С. Наркевич" }
+    // Кафедра ИСИТ
+    { name: "Блинова Е.А.", dept: "ИСИТ", position: "Заведующий кафедрой, к.т.н." },
+    { name: "Урбанович П.П.", dept: "ИСИТ", position: "Профессор, д.т.н." },
+    { name: "Гурин Н.И.", dept: "ИСИТ", position: "Доцент" },
+    { name: "Пустовалова Н.Н.", dept: "ИСИТ", position: "Доцент, к.т.н." },
+    { name: "Жиляк Н.А.", dept: "ИСИТ", position: "Доцент, к.т.н." },
+    { name: "Савельева М.Г.", dept: "ИСИТ", position: "Ассистент" },
+    { name: "Кантарович В.С.", dept: "ИСИТ", position: "Старший преподаватель" },
+    { name: "Жук Я.А.", dept: "ИСИТ", position: "Старший преподаватель" },
+    { name: "Тимонович Г.Л.", dept: "ИСИТ", position: "Доцент, к.т.н." },
+    { name: "Бернацкий П.В.", dept: "ИСИТ", position: "Ассистент" },
+    { name: "Нистюк О.А.", dept: "ИСИТ", position: "Старший преподаватель" },
+    { name: "Харланович А.В.", dept: "ИСИТ", position: "Ассистент" },
+    { name: "Барковский Е.В.", dept: "ИСИТ", position: "Старший преподаватель" },
+    { name: "Сергей Л.В.", dept: "ИСИТ", position: "Инженер 2 категории" },
+    { name: "Шкуратова С.А.", dept: "ИСИТ", position: "Оператор" },
+    { name: "Безмен Н.Б.", dept: "ИСИТ", position: "Инженер" },
+    { name: "Малевич И.Д.", dept: "ИСИТ", position: "Инженер" },
+    { name: "Шешолко В.К.", dept: "ИСИТ", position: "Доцент" },
+    { name: "Сазонова Д.В.", dept: "ИСИТ", position: "Старший преподаватель" },
+    { name: "Ржеутская Н.В.", dept: "ИСИТ", position: "Старший преподаватель" },
+    { name: "Уласевич Н.И.", dept: "ИСИТ", position: "Ассистент" },
+    { name: "Николайчук А.Н.", dept: "ИСИТ", position: "Ассистент" },
+    { name: "Подрез А.А.", dept: "ИСИТ", position: "Ассистент" },
+    { name: "Алешаускас В.А.", dept: "ИСИТ", position: "Ассистент" },
+    { name: "Заянковский Д.В.", dept: "ИСИТ", position: "Ассистент" },
+
+    // Кафедра информатики и веб-дизайна
+    { name: "Романенко Д.М.", dept: "Информатики и веб-дизайна", position: "Заведующий кафедрой, доцент" },
+    { name: "Дятко А.А.", dept: "Информатики и веб-дизайна", position: "Доцент" },
+    { name: "Новосельская О.А.", dept: "Информатики и веб-дизайна", position: "Доцент" },
+    { name: "Гайдук С.С.", dept: "Информатики и веб-дизайна", position: "Доцент" },
+    { name: "Шутько Н.П.", dept: "Информатики и веб-дизайна", position: "Доцент" },
+    { name: "Короленя Р.О.", dept: "Информатики и веб-дизайна", position: "Доцент" },
+    { name: "Кудлацкая М.Ф.", dept: "Информатики и веб-дизайна", position: "Доцент" },
+    { name: "Мирончик Е.С.", dept: "Информатики и веб-дизайна", position: "Доцент" },
+    { name: "Осоко С.А.", dept: "Информатики и веб-дизайна", position: "Старший преподаватель" },
+    { name: "Савчук Н.А.", dept: "Информатики и веб-дизайна", position: "Старший преподаватель" },
+    { name: "Щербакова А.Н.", dept: "Информатики и веб-дизайна", position: "Старший преподаватель" },
+    { name: "Попеня Н.В.", dept: "Информатики и веб-дизайна", position: "Старший преподаватель" },
+    { name: "Игнаткова Я.А.", dept: "Информатики и веб-дизайна", position: "Старший преподаватель" },
+    { name: "Кунцевич С.В.", dept: "Информатики и веб-дизайна", position: "Инженер" },
+    { name: "Кизино А.В.", dept: "Информатики и веб-дизайна", position: "Преподаватель-стажер" },
+    { name: "Ворошень В.А.", dept: "Информатики и веб-дизайна", position: "Преподаватель-стажер" },
+    { name: "Обухова Е.В.", dept: "Информатики и веб-дизайна", position: "Преподаватель-стажер" },
+    { name: "Гончарова З.В.", dept: "Информатики и веб-дизайна", position: "Инженер" },
+    { name: "Горячко Д.С.", dept: "Информатики и веб-дизайна", position: "Инженер" },
+
+    // Кафедра программной инженерии
+    { name: "Смелов В.В.", dept: "Программной инженерии", position: "Заведующий кафедрой, доцент" },
+    { name: "Шиман Д.В.", dept: "Программной инженерии", position: "Доцент" },
+    { name: "Парамонов А.И.", dept: "Программной инженерии", position: "Доцент" },
+    { name: "Белодед Н.И.", dept: "Программной инженерии", position: "Доцент" },
+    { name: "Наркевич А.С.", dept: "Программной инженерии", position: "Старший преподаватель" },
+    { name: "Сухорукова И.Г.", dept: "Программной инженерии", position: "Старший преподаватель" },
+    { name: "Волчек Д.И.", dept: "Программной инженерии", position: "Ассистент" },
+    { name: "Мущук А.Н.", dept: "Программной инженерии", position: "Ассистент" },
+    { name: "Гончар Е.А.", dept: "Программной инженерии", position: "Ассистент" },
+    { name: "Некрасова А.П.", dept: "Программной инженерии", position: "Преподаватель-стажер" },
+    { name: "Гурина К.С.", dept: "Программной инженерии", position: "Преподаватель-стажер" },
+    { name: "Авдеева В.Д.", dept: "Программной инженерии", position: "Преподаватель-стажер" },
+    { name: "Шкабара И.Н.", dept: "Программной инженерии", position: "Инженер" },
+    { name: "Цягунович Т.В.", dept: "Программной инженерии", position: "Инженер" },
+
+    // Кафедра физики
+    { name: "Крук Н.Н.", dept: "Физики", position: "Заведующий кафедрой физики, профессор" },
+    { name: "Наркевич И.И.", dept: "Физики", position: "Профессор" },
+    { name: "Бобрович О.Г.", dept: "Физики", position: "Доцент" },
+    { name: "Кленицкий Д.В.", dept: "Физики", position: "Доцент" },
+    { name: "Крылов А.Б.", dept: "Физики", position: "Доцент" },
+    { name: "Миксюк Ю.И.", dept: "Физики", position: "Доцент" },
+    { name: "Мисевич А.В.", dept: "Физики", position: "Доцент" },
+    { name: "Поплавский В.В.", dept: "Физики", position: "Доцент" },
+    { name: "Тульев В.В.", dept: "Физики", position: "Доцент" },
+    { name: "Фарафонтова Е.В.", dept: "Физики", position: "Доцент" },
+    { name: "Вершиловская И.В.", dept: "Физики", position: "Доцент" },
+    { name: "Буцень А.В.", dept: "Физики", position: "Ассистент" },
+    { name: "Филиппова П.П.", dept: "Физики", position: "Преподаватель-стажер" },
+
+    // Кафедра инженерной графики
+    { name: "Касперов Г.И.", dept: "Инженерной графики", position: "Заведующий кафедрой, доцент" },
+    { name: "Гарабажиу А.А.", dept: "Инженерной графики", position: "Доцент" },
+    { name: "Красковский С.В.", dept: "Инженерной графики", position: "Доцент" },
+    { name: "Науменко А.И.", dept: "Инженерной графики", position: "Доцент" },
+    { name: "Бобровский С.Э.", dept: "Инженерной графики", position: "Старший преподаватель" },
+    { name: "Гиль В.И.", dept: "Инженерной графики", position: "Старший преподаватель" },
+    { name: "Исаченков В.С.", dept: "Инженерной графики", position: "Старший преподаватель" },
+    { name: "Войтеховский Б.В.", dept: "Инженерной графики", position: "Старший преподаватель" },
+    { name: "Ращупкин С.В.", dept: "Инженерной графики", position: "Старший преподаватель" },
+    { name: "Лосик Е.А.", dept: "Инженерной графики", position: "Ассистент" },
+    { name: "Журавлева Я.Ю.", dept: "Инженерной графики", position: "Преподаватель-стажер" },
+
+    // Кафедра высшей математики
+    { name: "Пыжкова О.Н.", dept: "Высшей математики", position: "Заведующий кафедрой, доцент" },
+    { name: "Савва В.А.", dept: "Высшей математики", position: "Профессор" },
+    { name: "Асмыкович И.К.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Борковская И.М.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Волк А.М.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Игнатенко В.В.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Ловенецкая Е.И.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Соловьева И.Ф.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Слепцов В.Ф.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Якименко А.А.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Яроцкая Л.Д.", dept: "Высшей математики", position: "Доцент" },
+    { name: "Бочило Н.В.", dept: "Высшей математики", position: "Старший преподаватель" },
+    { name: "Калиновская Е.В.", dept: "Высшей математики", position: "Старший преподаватель" },
+    { name: "Устилко Е.В.", dept: "Высшей математики", position: "Старший преподаватель" },
+    { name: "Явид Е.В.", dept: "Высшей математики", position: "Старший преподаватель" },
+    { name: "Янович С.В.", dept: "Высшей математики", position: "Старший преподаватель" },
+    { name: "Капура М.С.", dept: "Высшей математики", position: "Ассистент" },
+    { name: "Жолуд Е.И.", dept: "Высшей математики", position: "Преподаватель-стажер" },
+    { name: "Миронович Г.Н.", dept: "Высшей математики", position: "Специалист" }
 ];
 
+// Присваиваем каждому преподавателю оригинальный ID для связи с модалкой
+teachersData.forEach((t, i) => t.originalId = i);
+
 let previousScreen = 'main-menu-screen';
+let cachedReviewsData = null; // Кэш для отзывов
 
 function getTodayDayCode() {
     const jsDay = new Date().getDay();
@@ -474,45 +583,160 @@ async function fetchGoogleSheet(action, payload = {}) {
     }
 }
 
+// ГЛАВНАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ПРЕПОДАВАТЕЛЕЙ С ФИЛЬТРАМИ И СОРТИРОВКОЙ
 async function renderTeachers() {
     const container = document.getElementById('teachers-container');
-    container.innerHTML = '';
     
+    // 1. Рисуем интерфейс поиска и фильтров (если еще не отрисован)
+    if (!document.getElementById('teacher-controls-block')) {
+        const controlsHtml = `
+            <div id="teacher-controls-block" style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="teacher-search-input" placeholder="Поиск по имени..." style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); font-size: 14px; outline: none;">
+                
+                <div style="display: flex; gap: 10px;">
+                    <select id="teacher-dept-filter" style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); font-size: 13px; outline: none;">
+                        <option value="all">Все кафедры</option>
+                        <option value="ИСИТ">ИСИТ</option>
+                        <option value="Информатики и веб-дизайна">Информ. и веб-дизайна</option>
+                        <option value="Программной инженерии">Программной инженерии</option>
+                        <option value="Физики">Физики</option>
+                        <option value="Инженерной графики">Инженерной графики</option>
+                        <option value="Высшей математики">Высшей математики</option>
+                    </select>
+                    
+                    <select id="teacher-sort-select" style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); font-size: 13px; outline: none;">
+                        <option value="name_asc">А -> Я</option>
+                        <option value="name_desc">Я -> А</option>
+                        <option value="rating_desc">Лучший рейтинг</option>
+                        <option value="rating_asc">Низкий рейтинг</option>
+                    </select>
+                </div>
+            </div>
+            <div id="teachers-list-container"></div>
+        `;
+        container.innerHTML = controlsHtml;
+
+        // Вешаем слушатели на изменение фильтров
+        document.getElementById('teacher-search-input').addEventListener('input', updateTeachersListUI);
+        document.getElementById('teacher-dept-filter').addEventListener('change', updateTeachersListUI);
+        document.getElementById('teacher-sort-select').addEventListener('change', updateTeachersListUI);
+    }
+
+    const listContainer = document.getElementById('teachers-list-container');
+    
+    // Показываем кнопку админа при необходимости
     const currentUserId = tg.initDataUnsafe?.user?.id;
     const adminBtn = document.getElementById('admin-panel-btn');
     if (currentUserId === ADMIN_TG_ID || localStorage.getItem('force_admin') === 'true') {
         adminBtn.classList.remove('hidden');
     }
 
-    const allReviews = await fetchGoogleSheet('getReviews') || [];
+    // Скачиваем отзывы один раз и кэшируем, чтобы фильтры работали без задержек
+    if (!cachedReviewsData) {
+        listContainer.innerHTML = '<p style="text-align: center; color: var(--hint-color); padding: 20px;">Загрузка данных...</p>';
+        cachedReviewsData = await fetchGoogleSheet('getReviews') || [];
+    }
 
-    teachersData.forEach((t, index) => {
+    updateTeachersListUI();
+}
+
+// ЛОГИКА ФИЛЬТРАЦИИ И СОРТИРОВКИ
+function updateTeachersListUI() {
+    const listContainer = document.getElementById('teachers-list-container');
+    const searchQuery = document.getElementById('teacher-search-input').value.toLowerCase().trim();
+    const deptFilter = document.getElementById('teacher-dept-filter').value;
+    const sortMode = document.getElementById('teacher-sort-select').value;
+    
+    listContainer.innerHTML = ''; // Очищаем список
+
+    // 1. Высчитываем актуальный рейтинг и количество отзывов для каждого препода
+    let mappedTeachers = teachersData.map(t => {
+        const teacherReviews = cachedReviewsData.filter(r => String(r.teacherid) === String(t.originalId) && String(r.status).trim() === 'approved');
+        const ratings = teacherReviews.filter(r => r.rating !== undefined && r.rating !== "").map(r => Number(r.rating));
+        
+        const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : 0;
+        
+        return {
+            ...t,
+            avgRating: parseFloat(avgRating),
+            reviewCount: ratings.length
+        };
+    });
+
+    // 2. ФИЛЬТРУЕМ по имени и кафедре
+    let filteredTeachers = mappedTeachers.filter(t => {
+        const matchName = t.name.toLowerCase().includes(searchQuery);
+        const matchDept = (deptFilter === 'all') || (t.dept === deptFilter);
+        return matchName && matchDept;
+    });
+
+    // 3. СОРТИРУЕМ результаты
+    filteredTeachers.sort((a, b) => {
+        if (sortMode === 'name_asc') {
+            return a.name.localeCompare(b.name);
+        } else if (sortMode === 'name_desc') {
+            return b.name.localeCompare(a.name);
+        } else if (sortMode === 'rating_desc') {
+            // При равном рейтинге выше те, у кого больше отзывов
+            if (b.avgRating === a.avgRating) return b.reviewCount - a.reviewCount;
+            return b.avgRating - a.avgRating; 
+        } else if (sortMode === 'rating_asc') {
+            // Преподы без рейтинга (0) падают вниз, чтобы не мешать
+            if (a.avgRating === 0 && b.avgRating !== 0) return 1;
+            if (b.avgRating === 0 && a.avgRating !== 0) return -1;
+            
+            if (a.avgRating === b.avgRating) return b.reviewCount - a.reviewCount;
+            return a.avgRating - b.avgRating;
+        }
+        return 0;
+    });
+
+    if (filteredTeachers.length === 0) {
+        listContainer.innerHTML = '<p style="text-align:center; color: var(--hint-color); margin-top: 20px;">Ничего не найдено</p>';
+        return;
+    }
+
+    // 4. ОТРИСОВЫВАЕМ КАРТОЧКИ
+    filteredTeachers.forEach(t => {
         const card = document.createElement('div');
         card.className = 'schedule-card teacher-card-clickable';
-        card.dataset.id = index; 
-        
-        const teacherReviews = allReviews.filter(r => String(r.teacherid) === String(index) && String(r.status).trim() === 'approved');
-        const ratings = teacherReviews.filter(r => r.rating !== undefined && r.rating !== "").map(r => Number(r.rating));
-        const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—";
+        card.dataset.id = t.originalId; 
 
         const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888888'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
         const photoSrc = t.photo ? t.photo : defaultAvatar;
+        
+        // Красивое форматирование бейджика рейтинга
+        const displayRating = t.avgRating > 0 ? `[${t.avgRating}]` : '—';
+        const reviewText = t.reviewCount > 0 ? `<div style="font-size: 10px; opacity: 0.7; margin-top: 2px;">${t.reviewCount} отзыв(ов)</div>` : `<div style="font-size: 10px; opacity: 0.7; margin-top: 2px;">Нет оценок</div>`;
+
+        // Специальный визуальный тег для Заведующих кафедрой
+        const isHead = t.position && t.position.toLowerCase().includes("заведующий");
+        const positionBadge = isHead ? `<span style="background: rgba(234, 179, 8, 0.2); color: #eab308; padding: 2px 6px; border-radius: 4px; font-size: 10px; border: 1px solid rgba(234, 179, 8, 0.4);">⭐ Зав. кафедрой</span>` : '';
 
         card.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                 <div style="display: flex; align-items: center; gap: 14px;">
                     <img src="${photoSrc}" alt="Фото" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color);">
-                    <div class="subject-title" style="margin-bottom: 0;">${t.name}</div>
+                    <div>
+                        <div class="subject-title" style="margin-bottom: 4px;">${t.name}</div>
+                        <div style="font-size: 11px; color: var(--hint-color); line-height: 1.4;">
+                            ${positionBadge} ${t.position ? t.position.replace('Заведующий кафедрой, ', '') : 'Преподаватель'}<br>
+                            Кафедра: <span style="color: var(--text-color);">${t.dept}</span>
+                        </div>
+                    </div>
                 </div>
-                <div style="background: var(--accent-color); color: #fff; padding: 4px 10px; border-radius: 10px; font-weight: bold; font-size: 14px;">
-                    [${avgRating}]
+                <div style="text-align: right;">
+                    <div style="background: var(--accent-color); color: #fff; padding: 6px 12px; border-radius: 10px; font-weight: bold; font-size: 14px; display: inline-block;">
+                        ${displayRating}
+                    </div>
+                    ${reviewText}
                 </div>
             </div>
-            <div style="margin-top: 10px; font-size: 12px; color: var(--accent-color); text-align: right;">Подробнее -></div>
+            <div style="font-size: 12px; color: var(--accent-color); text-align: right; margin-top: 4px;">Оставить отзыв -></div>
         `;
         
-        card.addEventListener('click', () => openTeacherModal(index));
-        container.appendChild(card);
+        card.addEventListener('click', () => openTeacherModal(t.originalId));
+        listContainer.appendChild(card);
     });
 }
 
@@ -520,13 +744,19 @@ const teacherModal = document.getElementById('teacher-modal');
 async function openTeacherModal(index) {
     currentTeacherId = index;
     selectedRatingValue = 5; 
-    const t = teachersData[index];
+    
+    // Находим нужного препода по оригинальному ID
+    const t = teachersData.find(item => item.originalId === index); 
+    
     const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888888'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
     const photoSrc = t.photo ? t.photo : defaultAvatar;
 
     document.getElementById('teacher-modal-header').innerHTML = `
         <img src="${photoSrc}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
-        <h2 style="font-size: 18px;">${t.name}</h2>
+        <div>
+            <h2 style="font-size: 18px; margin-bottom: 4px;">${t.name}</h2>
+            <div style="font-size: 12px; color: var(--hint-color);">${t.position || 'Преподаватель'}</div>
+        </div>
     `;
 
     updateStarsPickerDOM();
@@ -591,7 +821,9 @@ async function renderTeacherReviews(teacherId) {
     const list = document.getElementById('teacher-reviews-list');
     const accentColor = getAccentColor();
     
+    // Загружаем отзывы и обновляем кэш, если его нет или принудительно (после добавления)
     const allReviews = await fetchGoogleSheet('getReviews');
+    cachedReviewsData = allReviews; 
     
     if (!allReviews) {
         list.innerHTML = '<p style="color: red; font-size: 13px; text-align: center;">Ошибка сети.</p>';
@@ -642,6 +874,7 @@ document.getElementById('teacher-reviews-list').addEventListener('click', async 
             btn.textContent = "...";
             await fetchGoogleSheet('deleteReview', { id: id });
             await renderTeacherReviews(currentTeacherId);
+            updateTeachersListUI(); // Обновляем рейтинг снаружи
         }
     }
 });
@@ -658,7 +891,6 @@ if(submitReviewBtn) {
             return;
         }
 
-        // --- БЛОК АВТОМОДЕРАЦИИ ---
         const badWords = ['дурак', 'дебил', 'сука', 'хрен', 'мразь', 'бля', 'хуй', 'пизд']; 
         const lowerText = text.toLowerCase();
         
@@ -667,7 +899,6 @@ if(submitReviewBtn) {
             tg.showAlert("Пожалуйста, выражайтесь культурно. Отзыв содержит запрещенные слова.");
             return; 
         }
-        // --- КОНЕЦ АВТОМОДЕРАЦИИ ---
 
         const user = tg.initDataUnsafe?.user;
         let authorName = "Анонимный Студент";
@@ -681,30 +912,29 @@ if(submitReviewBtn) {
         submitReviewBtn.disabled = true;
         submitReviewBtn.textContent = "Отправка...";
 
-        // МЕНЯЕМ СТАТУС НА approved
         const newReview = {
             teacherid: currentTeacherId.toString(),
             text: text,
             rating: rating,
             author: authorName,
             authorid: authorId ? authorId.toString() : "",
-            status: 'approved' // <-- Теперь отзыв сразу считается одобренным
+            status: 'approved' 
         };
 
         const res = await fetchGoogleSheet('addReview', newReview);
 
         if (res && res.success) {
             textInput.value = '';
-            tg.showAlert("Отзыв успешно опубликован!"); // Изменили текст уведомления
+            tg.showAlert("Отзыв успешно опубликован!"); 
             
-            // Сразу обновляем список отзывов, чтобы пользователь увидел свой
-            await renderTeacherReviews(currentTeacherId);
+            await renderTeacherReviews(currentTeacherId); // перерисовка отзывов внутри
+            updateTeachersListUI(); // перерисовка главного списка (чтобы обновилась оценка)
         } else {
             tg.showAlert("Ошибка БД: " + (res?.errorMsg || "Неизвестная ошибка"));
         }
 
         submitReviewBtn.disabled = false;
-        submitReviewBtn.textContent = "Оставить отзыв"; // Изменили текст на кнопке
+        submitReviewBtn.textContent = "Оставить отзыв"; 
     });
 }
 
@@ -751,7 +981,8 @@ async function renderAdminReviews() {
         list.innerHTML = '<p style="color: var(--hint-color); font-size: 13px; text-align: center;">Все чисто! Новых отзывов нет.</p>';
     } else {
         pendingReviews.forEach(r => {
-            const tName = teachersData[r.teacherid]?.name || "Неизвестный препод";
+            const t = teachersData.find(item => item.originalId == r.teacherid);
+            const tName = t ? t.name : "Неизвестный препод";
             let reviewStars = '';
             if (r.rating) {
                 const count = Number(r.rating);
@@ -791,10 +1022,12 @@ if(adminReviewsList) {
             e.target.textContent = "...";
             await fetchGoogleSheet('updateStatus', { id: id, status: 'approved' });
             await renderAdminReviews(); 
+            cachedReviewsData = null; // сбрасываем кэш
         } else if (e.target.classList.contains('btn-reject')) {
             e.target.textContent = "...";
             await fetchGoogleSheet('deleteReview', { id: id });
             await renderAdminReviews(); 
+            cachedReviewsData = null; // сбрасываем кэш
         }
     });
 }
